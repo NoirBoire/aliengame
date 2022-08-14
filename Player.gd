@@ -77,11 +77,11 @@ func _physics_process(delta):
 		# Allow dashing
 		if Engine.time_scale >= 1:
 			can_dash = true
-		#else:
-		#	can_dash = false
+		else:
+			can_dash = false
+	
 	if is_on_ceiling():
 		# Stop jump when hitting ceiling
-		
 		if motion.y < 0:
 			motion.y = 0
 
@@ -151,8 +151,7 @@ func _physics_process(delta):
 
 	
 func jump():
-	if jump_buffer_jump:
-		jump_buffer_jump = false
+
 	if is_on_floor() || !coyote_timer.is_stopped():
 		if dashing && !air_dash:
 			motion.y = max_jump_vel*1.2

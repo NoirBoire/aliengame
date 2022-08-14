@@ -10,6 +10,13 @@ var was_on_drone := false
 var can_slowmo := true
 
 func _physics_process(delta):
+	
+	# Check for jump on alien
+	if (Input.is_action_just_pressed(Global.button_jump) || !alien.jump_buffer.is_stopped()) && on_drone:
+		if alien.position.y > position.y+3:
+			alien.position.y = position.y
+		alien.can_dash = true
+	
 	if $Area2D.overlaps_body(alien):
 		on_drone = true
 		was_on_drone = true
@@ -30,12 +37,6 @@ func _physics_process(delta):
 			timer.stop()
 			was_on_drone = false
 	
-	# Check for jump on alien
-	if (Input.is_action_just_pressed(Global.button_jump) || !alien.jump_buffer.is_stopped()) && on_drone:
-		if alien.position.y > position.y+3:
-			alien.position.y = position.y
-		alien.can_dash = true
-
 	if hp <= 0:
 		$DeathTimer.start()
 

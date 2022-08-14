@@ -1,10 +1,10 @@
 extends Node2D
 
-export var wait_time := 0.35
+export var wait_time := 0.0
 export var one_shot := true
 export var autostart := false
 
-var time_left := 0.35
+var time_left := 0.0
 var active := true
 
 signal is_done
