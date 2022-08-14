@@ -1,0 +1,226 @@
+[gd_scene load_steps=35 format=2]
+
+[ext_resource path="res://Scenes/Nodes/Dash.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Player.gd" type="Script" id=2]
+[ext_resource path="res://Assets/Alien.png" type="Texture" id=4]
+
+[sub_resource type="RectangleShape2D" id=5]
+extents = Vector2( 2, 6 )
+
+[sub_resource type="AnimationNodeAnimation" id=24]
+animation = "Dash"
+
+[sub_resource type="AnimationNodeAnimation" id=8]
+animation = "Fall"
+
+[sub_resource type="AnimationNodeAnimation" id=9]
+animation = "Idle"
+
+[sub_resource type="AnimationNodeAnimation" id=10]
+animation = "Jump"
+
+[sub_resource type="AnimationNodeAnimation" id=11]
+animation = "Run"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=12]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=13]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=14]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=15]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=16]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=17]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=18]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=21]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=22]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=25]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=26]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=27]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=28]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=29]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=30]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=31]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=32]
+
+[sub_resource type="AnimationNodeStateMachine" id=19]
+states/Dash/node = SubResource( 24 )
+states/Dash/position = Vector2( 217, 131 )
+states/Fall/node = SubResource( 8 )
+states/Fall/position = Vector2( 858, 109 )
+states/Idle/node = SubResource( 9 )
+states/Idle/position = Vector2( 315, 56 )
+states/Jump/node = SubResource( 10 )
+states/Jump/position = Vector2( 657, 42 )
+states/Run/node = SubResource( 11 )
+states/Run/position = Vector2( 470, 144 )
+transitions = [ "Jump", "Fall", SubResource( 12 ), "Idle", "Run", SubResource( 13 ), "Run", "Idle", SubResource( 14 ), "Run", "Jump", SubResource( 15 ), "Idle", "Jump", SubResource( 16 ), "Run", "Fall", SubResource( 17 ), "Idle", "Fall", SubResource( 18 ), "Fall", "Run", SubResource( 21 ), "Fall", "Idle", SubResource( 22 ), "Idle", "Dash", SubResource( 25 ), "Run", "Dash", SubResource( 26 ), "Jump", "Dash", SubResource( 27 ), "Fall", "Dash", SubResource( 28 ), "Dash", "Idle", SubResource( 29 ), "Dash", "Run", SubResource( 30 ), "Dash", "Jump", SubResource( 31 ), "Dash", "Fall", SubResource( 32 ) ]
+start_node = "Idle"
+
+[sub_resource type="AnimationNodeStateMachinePlayback" id=20]
+
+[sub_resource type="Animation" id=23]
+resource_name = "Dash"
+length = 0.24
+loop = true
+step = 0.04
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.04, 0.08, 0.12, 0.16, 0.2 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 16, 17, 18, 19, 20, 21 ]
+}
+
+[sub_resource type="Animation" id=6]
+resource_name = "Fall"
+length = 0.22
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 1,
+"values": [ 13, 14, 15 ]
+}
+
+[sub_resource type="Animation" id=2]
+resource_name = "Idle"
+length = 2.4
+loop = true
+step = 0.3
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.9, 1.2, 2.1 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 0, 1, 2, 3 ]
+}
+
+[sub_resource type="Animation" id=7]
+resource_name = "Jump"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3, 0.4 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 9, 10, 11, 12, 12 ]
+}
+
+[sub_resource type="Animation" id=3]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ 0 ]
+}
+
+[sub_resource type="Animation" id=4]
+resource_name = "Run"
+length = 0.5
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3, 0.4 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 7, 8, 4, 5, 6 ]
+}
+
+[node name="Alien" type="KinematicBody2D"]
+position = Vector2( 143, -24 )
+script = ExtResource( 2 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2( 0, 2 )
+shape = SubResource( 5 )
+
+[node name="Camera2D" type="Camera2D" parent="."]
+current = true
+smoothing_enabled = true
+smoothing_speed = 4.0
+
+[node name="Node2D" type="Node2D" parent="Camera2D"]
+position = Vector2( -143, 24 )
+z_index = -4096
+
+[node name="ColorRect" type="ColorRect" parent="Camera2D/Node2D"]
+margin_left = -705.0
+margin_top = -375.0
+margin_right = 1088.0
+margin_bottom = 511.0
+color = Color( 0.427451, 0.588235, 0.529412, 1 )
+
+[node name="Sprite" type="Sprite" parent="."]
+texture = ExtResource( 4 )
+hframes = 22
+
+[node name="AnimationTree" type="AnimationTree" parent="Sprite"]
+tree_root = SubResource( 19 )
+anim_player = NodePath("AnimationPlayer")
+active = true
+parameters/playback = SubResource( 20 )
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Sprite/AnimationTree"]
+root_node = NodePath("../..")
+anims/Dash = SubResource( 23 )
+anims/Fall = SubResource( 6 )
+anims/Idle = SubResource( 2 )
+anims/Jump = SubResource( 7 )
+anims/RESET = SubResource( 3 )
+anims/Run = SubResource( 4 )
+
+[node name="CoyoteTimer" type="Timer" parent="."]
+wait_time = 0.1
+one_shot = true
+
+[node name="JumpBuffer" type="Timer" parent="."]
+wait_time = 0.1
+one_shot = true
+
+[node name="Dash" parent="." instance=ExtResource( 1 )]
