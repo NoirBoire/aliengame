@@ -16,6 +16,7 @@ var jump_duration := 0.5
 var is_jumping := false
 var coyote_timer_duration := 0.1
 var was_on_floor
+var jump_buffer_jump := false
 
 # Dash vars
 var dash_duration := 0.16
@@ -29,6 +30,7 @@ var air_dash := false
 
 # Child vars
 onready var coyote_timer = $CoyoteTimer
+onready var jump_buffer = $JumpBuffer
 onready var slowmo = $Slowmo
 onready var anim_state = $Sprite/AnimationTree.get("parameters/playback")
 
@@ -75,21 +77,20 @@ func _physics_process(delta):
 		# Allow dashing
 		if Engine.time_scale >= 1:
 			can_dash = true
-		else:
-			can_dash = false
+		#else:
+		#	can_dash = false
 	if is_on_ceiling():
 		# Stop jump when hitting ceiling
 		
 		if motion.y < 0:
 			motion.y = 0
 
-	
 	# Jumping
-	
 	if !is_on_floor() && was_on_floor && !is_jumping:
 		coyote_timer.start()
-	if (is_on_floor() && !$JumpBuffer.is_stopped()) || (!coyote_timer.is_stopped() && !$JumpBuffer.is_stopped()):
+	if ((is_on_floor() && !jump_buffer.is_stopped()) || (!coyote_timer.is_stopped() && !jump_buffer.is_stopped())) && motion.y > (max_jump_vel+100):
 		jump()
+	
 	if Input.is_action_just_pressed(button_jump):
 		jump()
 	if Input.is_action_just_released(button_jump):
@@ -150,9 +151,12 @@ func _physics_process(delta):
 
 	
 func jump():
+	if jump_buffer_jump:
+		jump_buffer_jump = false
 	if is_on_floor() || !coyote_timer.is_stopped():
 		if dashing && !air_dash:
 			motion.y = max_jump_vel*1.2
+			can_dash = false
 		else:
 			dash_anim = false
 			stop_dash_anim()
@@ -161,11 +165,10 @@ func jump():
 		if dashing:
 			dashing = false
 			stop_dashing()
-			can_dash = false
 		coyote_timer.stop()
 		$Slowmo.end_slowmo()
 	elif !is_on_floor():
-		$JumpBuffer.start()
+		jump_buffer.start()
 func dash():
 	if is_on_floor():
 		air_dash = false
