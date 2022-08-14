@@ -87,9 +87,8 @@ func _physics_process(delta):
 	# Jumping
 	
 	if !is_on_floor() && was_on_floor && !is_jumping:
-		$CoyoteTimer.start()
-		$CoyoteTimer.wait_time = coyote_timer_duration
-	if (is_on_floor() && !$JumpBuffer.is_stopped()) || (!$CoyoteTimer.is_stopped() && !$JumpBuffer.is_stopped()):
+		coyote_timer.start()
+	if (is_on_floor() && !$JumpBuffer.is_stopped()) || (!coyote_timer.is_stopped() && !$JumpBuffer.is_stopped()):
 		jump()
 	if Input.is_action_just_pressed(button_jump):
 		jump()
@@ -125,10 +124,7 @@ func _physics_process(delta):
 		motion_x = -speed*(1 if $Sprite.flip_h else -1)
 
 	motion.x = lerp(motion.x, motion_x*speed_modifier, (0.5 / ((1.0/Engine.get_frames_per_second())/delta) if dashing else 0.2 / ((1.0/Engine.get_frames_per_second())/delta)))
-	if Input.is_action_just_pressed("ui_enter"):
-		slowmo.start_slowmo()
-	if Input.is_action_just_pressed("ui_select"):
-		slowmo.end_slowmo()
+
 	# Animation
 
 	if !dash_anim:
@@ -154,7 +150,7 @@ func _physics_process(delta):
 
 	
 func jump():
-	if is_on_floor() || !$CoyoteTimer.is_stopped():
+	if is_on_floor() || !coyote_timer.is_stopped():
 		if dashing && !air_dash:
 			motion.y = max_jump_vel*1.2
 		else:
@@ -166,7 +162,7 @@ func jump():
 			dashing = false
 			stop_dashing()
 			can_dash = false
-		$CoyoteTimer.stop()
+		coyote_timer.stop()
 		$Slowmo.end_slowmo()
 	elif !is_on_floor():
 		$JumpBuffer.start()
@@ -189,7 +185,6 @@ func stop_dashing():
 	dashing = false
 func stop_dash_anim():
 	dash_anim = false
-	$Slowmo.end_slowmo()
 	motion.x = motion_x
 	$Dash/GhostTimer.stop()
 func die():
