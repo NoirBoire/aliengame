@@ -25,6 +25,8 @@ func stop():
 	time_left = 0.0
 
 func start():
+	if time_left > 0.0:
+		time_left = 0.0
 	time_left = wait_time
 	active = true
 

@@ -28,6 +28,9 @@ var dash_anim := false
 var can_dash := true
 var air_dash := false
 
+var buffering_jump := false
+var buffering_dash := false
+
 # Child vars
 onready var coyote_timer = $CoyoteTimer
 onready var jump_buffer = $JumpBuffer
@@ -89,10 +92,18 @@ func _physics_process(delta):
 	if !is_on_floor() && was_on_floor && !is_jumping:
 		coyote_timer.start()
 	if ((is_on_floor() && !jump_buffer.is_stopped()) || (!coyote_timer.is_stopped() && !jump_buffer.is_stopped())) && motion.y > (max_jump_vel+100):
-		jump()
+		if is_on_floor():
+			buffering_jump = true
+			$DashJumpBuffer.start()
+		else:
+			jump()
 	
 	if Input.is_action_just_pressed(button_jump):
-		jump()
+		if is_on_floor():
+			buffering_jump = true
+			$DashJumpBuffer.start()
+		else:
+			jump()
 	if Input.is_action_just_released(button_jump):
 		if motion.y < min_jump_vel:
 			motion.y = min_jump_vel
@@ -106,9 +117,11 @@ func _physics_process(delta):
 	
 	if Input.is_action_just_pressed(button_dash):
 		if can_dash:
-			dash()
-			if Input.is_action_just_pressed(button_jump):
-				jump()
+			if is_on_floor():
+				buffering_dash = true
+				$DashJumpBuffer.start()
+			else:
+				dash()
 	
 	# Horizontal movement and stopping
 	
@@ -141,7 +154,10 @@ func _physics_process(delta):
 				anim_state.travel("Fall")
 	else:
 		if !is_jumping:
-			anim_state.travel("Dash")
+			if !air_dash:
+				anim_state.travel("Dash")
+			elif air_dash:
+				anim_state.travel("Air Dash")
 		elif is_jumping:
 			anim_state.travel("Jump")
 	if position.y > 500:
@@ -151,7 +167,6 @@ func _physics_process(delta):
 
 	
 func jump():
-
 	if is_on_floor() || !coyote_timer.is_stopped():
 		if dashing && !air_dash:
 			motion.y = max_jump_vel*1.2
@@ -191,3 +206,18 @@ func stop_dash_anim():
 	$Dash/GhostTimer.stop()
 func die():
 	get_tree().change_scene("res://Scenes/Main.tscn")
+
+
+func _on_DashJumpBuffer_is_done():
+	if buffering_dash && buffering_jump:
+		dash()
+		jump()
+		buffering_dash = false
+		buffering_jump = false
+	elif buffering_dash:
+		dash()
+		buffering_dash = false
+	elif buffering_jump:
+		jump()
+		buffering_jump = false
+		

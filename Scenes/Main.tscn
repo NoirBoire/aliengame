@@ -190,13 +190,13 @@ script = ExtResource( 2 )
 [node name="Enemies" type="Node" parent="."]
 
 [node name="Drone2" parent="Enemies" instance=ExtResource( 5 )]
-position = Vector2( 256, 48 )
+position = Vector2( 311, 48 )
+
+[node name="Drone4" parent="Enemies" instance=ExtResource( 5 )]
+position = Vector2( 375, 48 )
 
 [node name="Drone3" parent="Enemies" instance=ExtResource( 5 )]
 position = Vector2( 416, -16 )
-
-[node name="Drone" parent="Enemies" instance=ExtResource( 5 )]
-position = Vector2( 368, 48 )
 
 [connection signal="body_entered" from="Secrets/Secret/Area2D" to="Secrets/Secret" method="_on_Area2D_body_entered"]
 [connection signal="body_entered" from="Secrets/Secret2/Area2D" to="Secrets/Secret2" method="_on_Area2D_body_entered"]
