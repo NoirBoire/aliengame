@@ -1,1 +1,2 @@
-# Project7
+# Alien Game
+Game with an alien
