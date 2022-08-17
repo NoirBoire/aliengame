@@ -5,6 +5,7 @@ var motion := Vector2()
 
 # Export vars
 export var hp := 2
+export var start_flip := false
 
 const UP := Vector2(0, -1)
 
