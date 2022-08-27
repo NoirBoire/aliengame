@@ -7,3 +7,6 @@ var button_right := "ui_right"
 var button_jump := "ui_z"
 var button_dash := "ui_x"
 var button_restart := "ui_r"
+var viewport = null
+var viewport_container = null
+var player

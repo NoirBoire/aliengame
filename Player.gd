@@ -70,6 +70,10 @@ func _ready():
 	gravity = 2 * max_jump_height / pow(jump_duration, 2)
 	max_jump_vel = -sqrt(2 * gravity * max_jump_height)
 	min_jump_vel = -sqrt(2 * gravity * min_jump_height)
+	
+	# Declare self as player on global.gd
+	
+	Global.player = self
 
 func _physics_process(delta):
 	

@@ -8,6 +8,6 @@ onready var particol = particle.instance()
 func _process(delta):
 	if $Area2D.overlaps_body(alien):
 		get_parent().add_child(particol)
-		particol.get_node("Particles2D").emitting = true
+		particol.get_node("ViewportContainer").get_node("Viewport").get_node("Particles2D").emitting = true
 		particol.position = position
 		queue_free()
