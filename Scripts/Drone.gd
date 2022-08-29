@@ -25,6 +25,7 @@ var can_fire = true
 var spawn_x
 var spawn_y
 var spawn_coordinates := Vector2()
+var can_flip := true
 
 # Onready vars
 onready var alien := owner.owner.get_node("Alien")
@@ -41,9 +42,11 @@ func _ready():
 func _physics_process(delta):
 	
 	#if owner.name == "Drone7":
-	#	print(check_line_of_sight(alien))
+	#	print(state)
 	
 	if owner.position.distance_to(spawn_coordinates) > 150:
+		state = RETURN
+	if owner.position.distance_to(alien.position) > 150:
 		state = RETURN
 	
 	# Check for jump on alien
@@ -91,8 +94,8 @@ func _physics_process(delta):
 					$Sprite.flip_h = false
 			else:
 				$Sprite.flip_h = false
-			if check_distance(alien) < 100:
-				if check_line_of_sight(alien):
+			if check_distance(alien) < 100 && abs(alien.position.y - owner.position.y) < 30:
+				if check_for_body(alien, alien.position):
 					state = SHOOT
 			# Animation
 			$Sprite/AnimationPlayer.current_animation = "Idle"
@@ -115,50 +118,71 @@ func _physics_process(delta):
 			# Animation
 			$Sprite/AnimationPlayer.current_animation = "Damaged"
 		PURSUIT:
-			if check_line_of_sight(alien):
-				if abs(alien.position.x - owner.position.x) > 100:
-					if alien.position.x > owner.position.x:
-						motion_x = speed
-						$Sprite.flip_h = true
-					elif alien.position.x < owner.position.x:
-						motion_x = -speed
-						$Sprite.flip_h = false
+			if check_for_body(alien, alien.position):
+				var position_to_check = Vector2(owner.position.x + (30 * (1 if $Sprite.flip_h else -1)), global_position.y)
+				if !((check_line_of_sight(position_to_check)) is TileMap):
+					if abs(alien.position.x - owner.position.x) > 100:
+						if alien.position.x > owner.position.x:
+							motion_x = speed
+							$Sprite.flip_h = true
+						elif alien.position.x < owner.position.x:
+							motion_x = -speed
+							$Sprite.flip_h = false
+					else:
+						motion_x = 0
+						motion_y = 0
+						state = SHOOT
+
+				# Animation
+				if !(($Sprite/AnimationPlayer.current_animation == "Shoot" || $Sprite/AnimationPlayer.current_animation == "Damaged") && $Sprite/AnimationPlayer.is_playing()):
+					$Sprite/AnimationPlayer.current_animation = "Idle"
+				$AnimationPlayer.stop(false)
+			else:
+				var position_to_check = Vector2(owner.position.x + (30 * (1 if $Sprite.flip_h else -1)), global_position.y)
+				if !((check_line_of_sight(position_to_check)) is TileMap):
+					if $Sprite.flip_h:
+						motion_x = lerp(motion_x, speed/2, 0.1)
+					elif !$Sprite.flip_h:
+						motion_x = lerp(motion_x, -speed/2, 0.1)
 				else:
 					motion_x = 0
-					motion_y = 0
-					state = SHOOT
-			else:
-				if abs(alien.position.x - owner.position.x) > 50:
-					if alien.position.x > owner.position.x:
-						motion_x = speed
-						$Sprite.flip_h = true
-					elif alien.position.x < owner.position.x:
-						motion_x = -speed
-						$Sprite.flip_h = false
-			# Animation
-			$Sprite/AnimationPlayer.current_animation = "Idle"
-			$AnimationPlayer.stop(false)
+					if abs(owner.motion.x) < 0.5:
+						yield(get_tree().create_timer(0.5),"timeout")
+						if can_flip:
+							$Sprite.flip_h = !$Sprite.flip_h
+							can_flip = false
+							yield(get_tree().create_timer(0.5),"timeout")
+							can_flip = true
+				# Animation
+				if !($Sprite/AnimationPlayer.current_animation == "Shoot" && $Sprite/AnimationPlayer.is_playing()):
+					$Sprite/AnimationPlayer.current_animation = "Idle"
+				$AnimationPlayer.play()
 		SHOOT:
 			# Animation
-			$Sprite/AnimationPlayer.current_animation = "Idle"
 			$AnimationPlayer.stop(false)
 			
 			if (abs(alien.position.x - owner.position.x) < 100):
-				if check_line_of_sight(alien):
+				if check_for_body(alien, alien.position):
 					if alien.position.x > owner.position.x:
-						$Sprite.flip_h = true
+						if !($Sprite/AnimationPlayer.current_animation == "Shoot" && $Sprite/AnimationPlayer.is_playing()):
+								$Sprite.flip_h = true
 					elif alien.position.x < owner.position.x:
-						$Sprite.flip_h = false
-					yield(get_tree().create_timer(0.75),"timeout")
-					if can_fire && state != DAMAGED:
-						var bullet: KinematicBody2D = bullet_scene.instance()
-						owner.owner.add_child(bullet)
-						bullet.global_position.y = global_position.y + 8
-						bullet.global_position.x = (global_position.x -4 if !$Sprite.flip_h else global_position.x + 8)
-						bullet.motion_x = (-72 if !$Sprite.flip_h else 72)
-						can_fire = false
-						yield(get_tree().create_timer(1),"timeout")
-						can_fire = true
+						if !($Sprite/AnimationPlayer.current_animation == "Shoot" && $Sprite/AnimationPlayer.is_playing()):
+							$Sprite.flip_h = false
+					var position_to_check = Vector2(owner.position.x + (100 * (1 if $Sprite.flip_h else -1)), owner.position.y+16)
+					if abs(global_position.y - alien.position.y) < 24:
+						yield(get_tree().create_timer(rand_range(1, 1.5)),"timeout")
+						if can_fire && state != DAMAGED:
+							$Sprite/AnimationPlayer.current_animation = "Shoot"
+							$Sprite/AnimationPlayer.play()
+							var bullet: KinematicBody2D = bullet_scene.instance()
+							owner.owner.add_child(bullet)
+							bullet.global_position.y = global_position.y + 3
+							bullet.global_position.x = (global_position.x -4 if !$Sprite.flip_h else global_position.x + 8)
+							bullet.motion_x = (-72 if !$Sprite.flip_h else 72)
+							can_fire = false
+							yield(get_tree().create_timer(1.5),"timeout")
+							can_fire = true
 				else:
 					yield(get_tree().create_timer(1),"timeout")
 					state = PURSUIT
@@ -178,7 +202,7 @@ func _physics_process(delta):
 					$Sprite.flip_h = true
 			else:
 				state = IDLE
-			#Animation
+			# Animation
 			$AnimationPlayer.play()
 			
 			
@@ -194,6 +218,7 @@ func _on_DamageAnimTimer_timeout():
 	if owner.hp <= 0:
 		die()
 	taking_damage = false
+	$Sprite/AnimationPlayer.current_animation = "Idle"
 	state = SHOOT
 	yield(get_tree().create_timer(0.75),"timeout")
 func _on_SlowmoTimer_is_done():
@@ -205,9 +230,9 @@ func check_distance(body) -> float:
 		return sqrt(pow((body.x - owner.position.x), 2)+pow((body.y - owner.position.y), 2))
 	else:
 		return sqrt(pow((body.position.x - owner.position.x), 2)+pow((body.position.y - owner.position.y), 2))
-func check_line_of_sight(body) -> bool:
+func check_for_body(body, target : Vector2) -> bool:
 	var space_state = get_world_2d().direct_space_state
-	var sight_check = space_state.intersect_ray(global_position, body.position, [self, owner], owner.collision_mask && 1)
+	var sight_check = space_state.intersect_ray(global_position, target, [self, owner], owner.collision_mask && 1)
 	if sight_check:
 		if sight_check.collider.name == body.name:
 			return true
@@ -215,5 +240,11 @@ func check_line_of_sight(body) -> bool:
 			return false
 	else:
 		return false
+func check_line_of_sight(body : Vector2) -> Object:
+	var space_state = get_world_2d().direct_space_state
+	var sight_check = space_state.intersect_ray(global_position, body, [self, owner], owner.collision_mask)
+	if sight_check:
+		return sight_check["collider"]
+	return null
 func die():
 	owner.queue_free()

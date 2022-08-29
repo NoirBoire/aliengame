@@ -49,6 +49,8 @@ var can_sprint := false
 var buffering_jump := false
 var buffering_dash := false
 
+var hp = 5
+
 # Child vars
 onready var coyote_timer = $CoyoteTimer
 onready var jump_buffer = $JumpBuffer
@@ -77,6 +79,8 @@ func _ready():
 
 func _physics_process(delta):
 	
+	print(motion)
+	
 	# Gravity and coyote timer check
 	was_on_floor = is_on_floor()
 	
@@ -89,8 +93,8 @@ func _physics_process(delta):
 	move_and_slide(motion, UP)
 	
 	if is_on_floor():
-		# Stop gravity when on floor
 		
+		# Stop gravity when on floor
 		if motion.y > 0:
 			motion.y = 0
 		
@@ -98,12 +102,12 @@ func _physics_process(delta):
 		can_dash = true
 
 	if is_on_ceiling():
+		
 		# Stop jump when hitting ceiling
 		if motion.y < 0:
 			motion.y = 0
 
 	# Restarting
-	
 	if Input.is_action_just_pressed(button_restart):
 		die()
 	
@@ -111,8 +115,6 @@ func _physics_process(delta):
 	match state:
 		IDLE:
 			motion_x = 0
-		DAMAGED:
-			pass
 		MOVE_RIGHT:
 			motion_x = speed
 			$Sprite.flip_h = false
@@ -130,17 +132,33 @@ func _physics_process(delta):
 		DASH_JUMP:
 			dash()
 			jump()
+		DAMAGED:
+			if $DamageTimer.is_stopped():
+				stop_dashing()
+				stop_dash_anim(true)
+				motion_x = 0
+				hp -= 1
+				if motion.y > 0:
+					motion.y = 0
+				motion.y = max_jump_vel/1.2
+				if $Sprite.flip_h:
+					motion.x = 100
+				elif !$Sprite.flip_h:
+					motion.x = -100
+				$DamageTimer.start()
+			motion.x = lerp(motion.x, motion_x, 0.05)
 	
 	# Horizontal movement and stopping
-	if !dashing:
-		if Input.is_action_pressed(button_right):
-			state = MOVE_RIGHT
-		elif Input.is_action_pressed(button_left):
-			state = MOVE_LEFT
-		else:
-			state = IDLE
-	elif motion_x == 0:
-		motion_x = -speed*(1 if $Sprite.flip_h else -1)
+	if state != DAMAGED:
+		if !dashing:
+			if Input.is_action_pressed(button_right):
+				state = MOVE_RIGHT
+			elif Input.is_action_pressed(button_left):
+				state = MOVE_LEFT
+			else:
+				state = IDLE
+		elif motion_x == 0:
+			motion_x = -speed*(1 if $Sprite.flip_h else -1)
 	
 	# Dashing
 	if Input.is_action_just_pressed(button_dash):
@@ -175,10 +193,11 @@ func _physics_process(delta):
 		is_jumping = false
 	
 	# Move player
-	motion.x = lerp(motion.x, motion_x*speed_modifier, (0.5 / ((1.0/Engine.get_frames_per_second())/delta) if dashing else 0.2 / ((1.0/Engine.get_frames_per_second())/delta)))
-
+	if state != DAMAGED:
+		motion.x = lerp(motion.x, motion_x*speed_modifier, (0.5 / ((1.0/Engine.get_frames_per_second())/delta) if dashing 
+		else ((0.2 / ((1.0/Engine.get_frames_per_second())/delta)) if abs(motion_x) > 0 else 0.8)))
+	
 	# Animation
-
 	if !dash_anim:
 		if is_on_floor():
 			if motion.x > speed/2 || motion.x < -speed/2:
@@ -209,50 +228,55 @@ func _physics_process(delta):
 
 	
 func jump():
-	if is_on_floor() || !coyote_timer.is_stopped():
-		if dashing && !air_dash:
-			motion.y = max_jump_vel*1.2
-			can_dash = false
-		else:
-			dash_anim = false
-			stop_dash_anim()
-			motion.y = max_jump_vel
-		is_jumping = true
-		if dashing:
-			dashing = false
-			stop_dashing()
-		coyote_timer.stop()
-		$Slowmo.end_slowmo()
-	elif !is_on_floor():
-		jump_buffer.start()
+	if state != DAMAGED:
+		if is_on_floor() || !coyote_timer.is_stopped():
+			if dashing && !air_dash:
+				motion.y = max_jump_vel*1.2
+				can_dash = false
+			else:
+				dash_anim = false
+				stop_dash_anim(false)
+				motion.y = max_jump_vel
+			is_jumping = true
+			if dashing:
+				dashing = false
+				stop_dashing()
+			coyote_timer.stop()
+			$Slowmo.end_slowmo()
+		elif !is_on_floor():
+			jump_buffer.start()
 
 func dash():
-	if is_on_floor():
-		air_dash = false
-	else:
-		air_dash = true
-	dashing = true
-	dash_anim = true
-	can_dash = false
-	speed_modifier = dash_speed
-	$Dash/DashTimer.wait_time = dash_duration
-	$Dash/DashAnimTimer.wait_time = dash_duration*1.4
-	$Dash/DashTimer.start()
-	$Dash/DashAnimTimer.start()
-	$Dash/GhostTimer.start()
+	if state != DAMAGED:
+		if is_on_floor():
+			air_dash = false
+		else:
+			air_dash = true
+		dashing = true
+		dash_anim = true
+		can_dash = false
+		speed_modifier = dash_speed
+		$Dash/DashTimer.wait_time = dash_duration
+		$Dash/DashAnimTimer.wait_time = dash_duration*1.4
+		$Dash/DashTimer.start()
+		$Dash/DashAnimTimer.start()
+		$Dash/GhostTimer.start()
 
 func stop_dashing():
 	speed_modifier = 1
 	dashing = false
 
-func stop_dash_anim():
+func stop_dash_anim(anim_only : bool):
 	dash_anim = false
-	motion.x = motion_x
 	$Dash/GhostTimer.stop()
+	if !anim_only:
+		motion.x = motion_x
 
 func die():
 	get_tree().change_scene("res://Scenes/Main.tscn")
 
+func take_damage():
+	state = DAMAGED
 
 func _on_DashJumpBuffer_is_done():
 	if buffering_dash && buffering_jump:
@@ -268,3 +292,10 @@ func _on_DashJumpBuffer_is_done():
 		jump()
 		buffering_jump = false
 		
+
+
+func _on_DamageTimer_timeout():
+	if hp <= 0:
+		die()
+	else:
+		state = IDLE

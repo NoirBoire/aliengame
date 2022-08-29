@@ -16,4 +16,6 @@ one_shot = true
 [node name="GhostTimer" type="Timer" parent="."]
 wait_time = 0.05
 
+[connection signal="timeout" from="DashTimer" to="." method="_on_DashTimer_timeout"]
+[connection signal="timeout" from="DashAnimTimer" to="." method="_on_DashAnimTimer_timeout"]
 [connection signal="timeout" from="GhostTimer" to="." method="_on_GhostTimer_timeout"]
