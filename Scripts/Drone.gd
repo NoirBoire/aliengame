@@ -4,7 +4,6 @@ extends Node2D
 enum {
 	IDLE,
 	DAMAGED,
-	PURSUIT,
 	SHOOT,
 	RETURN
 }
@@ -29,8 +28,9 @@ var can_flip := true
 
 # Onready vars
 onready var alien := owner.owner.get_node("Alien")
-onready var bullet_scene := preload("res://Scenes/Nodes/Bullet.tscn")
 onready var coyote_timer = alien.coyote_timer
+onready var bullet_scene := preload("res://Scenes/Nodes/Bullet.tscn")
+onready var shockwave_scene := preload("res://Scenes/Effects/BulletShockwave.tscn")
 
 func _ready():
 	$Sprite.flip_h = owner.start_flip
@@ -58,7 +58,7 @@ func _physics_process(delta):
 	if owner.has_node("CollisionShape2D"):
 		owner.get_node("CollisionShape2D").position = Vector2(position.x, position.y+3)
 	
-	if $Area2D.overlaps_body(alien):
+	if $Jumpbox.overlaps_body(alien):
 		player_colliding = true
 		was_player_colliding = true
 
@@ -66,7 +66,7 @@ func _physics_process(delta):
 		coyote_timer.start()
 		
 		# Slowmo and damage
-		if alien.dash_anim && alien.motion.y >= 0:
+		if alien.dash_anim && alien.motion.y >= 0 && $Hurtbox.overlaps_area(alien.get_node("Hitbox")):
 			if can_slowmo:
 				alien.slowmo.start_slowmo()
 				state = DAMAGED
@@ -117,46 +117,6 @@ func _physics_process(delta):
 					owner.get_node("CollisionShape2D").queue_free()
 			# Animation
 			$Sprite/AnimationPlayer.current_animation = "Damaged"
-		PURSUIT:
-			if check_for_body(alien, alien.position):
-				var position_to_check = Vector2(owner.position.x + (30 * (1 if $Sprite.flip_h else -1)), global_position.y)
-				if !((check_line_of_sight(position_to_check)) is TileMap):
-					if abs(alien.position.x - owner.position.x) > 100:
-						if alien.position.x > owner.position.x:
-							motion_x = speed
-							$Sprite.flip_h = true
-						elif alien.position.x < owner.position.x:
-							motion_x = -speed
-							$Sprite.flip_h = false
-					else:
-						motion_x = 0
-						motion_y = 0
-						state = SHOOT
-
-				# Animation
-				if !(($Sprite/AnimationPlayer.current_animation == "Shoot" || $Sprite/AnimationPlayer.current_animation == "Damaged") && $Sprite/AnimationPlayer.is_playing()):
-					$Sprite/AnimationPlayer.current_animation = "Idle"
-				$AnimationPlayer.stop(false)
-			else:
-				var position_to_check = Vector2(owner.position.x + (30 * (1 if $Sprite.flip_h else -1)), global_position.y)
-				if !((check_line_of_sight(position_to_check)) is TileMap):
-					if $Sprite.flip_h:
-						motion_x = lerp(motion_x, speed/2, 0.1)
-					elif !$Sprite.flip_h:
-						motion_x = lerp(motion_x, -speed/2, 0.1)
-				else:
-					motion_x = 0
-					if abs(owner.motion.x) < 0.5:
-						yield(get_tree().create_timer(0.5),"timeout")
-						if can_flip:
-							$Sprite.flip_h = !$Sprite.flip_h
-							can_flip = false
-							yield(get_tree().create_timer(0.5),"timeout")
-							can_flip = true
-				# Animation
-				if !($Sprite/AnimationPlayer.current_animation == "Shoot" && $Sprite/AnimationPlayer.is_playing()):
-					$Sprite/AnimationPlayer.current_animation = "Idle"
-				$AnimationPlayer.play()
 		SHOOT:
 			# Animation
 			$AnimationPlayer.stop(false)
@@ -175,19 +135,22 @@ func _physics_process(delta):
 						if can_fire && state != DAMAGED:
 							$Sprite/AnimationPlayer.current_animation = "Shoot"
 							$Sprite/AnimationPlayer.play()
+							
+							# Shoot bullet
 							var bullet: KinematicBody2D = bullet_scene.instance()
 							owner.owner.add_child(bullet)
 							bullet.global_position.y = global_position.y + 3
 							bullet.global_position.x = (global_position.x -4 if !$Sprite.flip_h else global_position.x + 8)
 							bullet.motion_x = (-72 if !$Sprite.flip_h else 72)
+							
+							# Bullet shockwave
+							var shockwave: Node2D = shockwave_scene.instance()
+							owner.owner.add_child(shockwave)
+							shockwave.global_position.x = (global_position.x -4 if !$Sprite.flip_h else global_position.x + 7)
+							shockwave.global_position.y = global_position.y + 3
 							can_fire = false
 							yield(get_tree().create_timer(1.5),"timeout")
 							can_fire = true
-				else:
-					yield(get_tree().create_timer(1),"timeout")
-					state = PURSUIT
-			else:
-				state = PURSUIT
 		RETURN:
 			owner.motion.x = 0
 			owner.motion.y = 0

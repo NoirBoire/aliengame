@@ -1,4 +1,4 @@
-[gd_scene load_steps=47 format=2]
+[gd_scene load_steps=50 format=2]
 
 [ext_resource path="res://Scenes/Nodes/Dash.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Player.gd" type="Script" id=2]
@@ -79,7 +79,7 @@ animation = "Run"
 
 [sub_resource type="AnimationNodeStateMachine" id=19]
 "states/Air Dash/node" = SubResource( 34 )
-"states/Air Dash/position" = Vector2( 60, 56 )
+"states/Air Dash/position" = Vector2( 58, 56 )
 states/Dash/node = SubResource( 24 )
 states/Dash/position = Vector2( 95, 156 )
 states/Fall/node = SubResource( 8 )
@@ -100,7 +100,7 @@ graph_offset = Vector2( -38, 10 )
 resource_name = "Air Dash"
 length = 0.2
 loop = true
-step = 0.04
+step = 0.02
 tracks/0/type = "value"
 tracks/0/path = NodePath(".:frame")
 tracks/0/interp = 1
@@ -111,14 +111,50 @@ tracks/0/keys = {
 "times": PoolRealArray( 0, 0.04, 0.16 ),
 "transitions": PoolRealArray( 1, 1, 1 ),
 "update": 1,
-"values": [ 20, 21, 20 ]
+"values": [ 22, 23, 22 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("../Hitbox/CollisionShape2D:disabled")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.02 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ true, false ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("../Hurtbox/Normal:disabled")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("../Hurtbox/Dash:disabled")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ false ]
 }
 
 [sub_resource type="Animation" id=23]
 resource_name = "Dash"
 length = 0.24
 loop = true
-step = 0.04
+step = 0.02
 tracks/0/type = "value"
 tracks/0/path = NodePath(".:frame")
 tracks/0/interp = 1
@@ -129,7 +165,43 @@ tracks/0/keys = {
 "times": PoolRealArray( 0, 0.04, 0.08, 0.12, 0.16, 0.2 ),
 "transitions": PoolRealArray( 1, 1, 1, 1, 1, 1 ),
 "update": 1,
-"values": [ 22, 23, 24, 25, 26, 27 ]
+"values": [ 24, 25, 26, 27, 28, 29 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("../Hitbox/CollisionShape2D:disabled")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.02 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ true, false ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("../Hurtbox/Normal:disabled")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("../Hurtbox/Dash:disabled")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ false ]
 }
 
 [sub_resource type="Animation" id=6]
@@ -145,7 +217,21 @@ tracks/0/keys = {
 "times": PoolRealArray( 0, 0.1, 0.2 ),
 "transitions": PoolRealArray( 1, 1, 1 ),
 "update": 1,
-"values": [ 17, 18, 19 ]
+"values": [ 19, 20, 21 ]
+}
+tracks/1/type = "method"
+tracks/1/path = NodePath("..")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"values": [ {
+"args": [  ],
+"method": "reset_hurtbox"
+} ]
 }
 
 [sub_resource type="Animation" id=2]
@@ -165,6 +251,20 @@ tracks/0/keys = {
 "update": 1,
 "values": [ 0, 1, 2, 3, 4, 5, 6, 7 ]
 }
+tracks/1/type = "method"
+tracks/1/path = NodePath("..")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"values": [ {
+"args": [  ],
+"method": "reset_hurtbox"
+} ]
+}
 
 [sub_resource type="Animation" id=7]
 resource_name = "Jump"
@@ -176,10 +276,24 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 0.1, 0.2, 0.3, 0.4 ),
-"transitions": PoolRealArray( 1, 1, 1, 1, 1 ),
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
 "update": 1,
-"values": [ 13, 14, 15, 16, 16 ]
+"values": [ 16, 17, 18, 18 ]
+}
+tracks/1/type = "method"
+tracks/1/path = NodePath("..")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"values": [ {
+"args": [  ],
+"method": "reset_hurtbox"
+} ]
 }
 
 [sub_resource type="Animation" id=3]
@@ -199,8 +313,9 @@ tracks/0/keys = {
 
 [sub_resource type="Animation" id=4]
 resource_name = "Run"
-length = 0.5
+length = 0.48
 loop = true
+step = 0.06
 tracks/0/type = "value"
 tracks/0/path = NodePath(".:frame")
 tracks/0/interp = 1
@@ -208,17 +323,42 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 0.1, 0.2, 0.3, 0.4 ),
-"transitions": PoolRealArray( 1, 1, 1, 1, 1 ),
+"times": PoolRealArray( 0, 0.06, 0.12, 0.18, 0.24, 0.3, 0.36, 0.42 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1 ),
 "update": 1,
-"values": [ 11, 12, 8, 9, 10 ]
+"values": [ 15, 8, 9, 10, 11, 12, 13, 14 ]
 }
+tracks/1/type = "method"
+tracks/1/path = NodePath("..")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"values": [ {
+"args": [  ],
+"method": "reset_hurtbox"
+} ]
+}
+
+[sub_resource type="CapsuleShape2D" id=43]
+radius = 6.0
+height = 12.0
+
+[sub_resource type="RectangleShape2D" id=44]
+extents = Vector2( 2, 4.5 )
+
+[sub_resource type="RectangleShape2D" id=45]
+extents = Vector2( 6.5, 1.5 )
 
 [node name="Alien" type="KinematicBody2D"]
 position = Vector2( 143, -24 )
 script = ExtResource( 2 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
 position = Vector2( 0, 2 )
 shape = SubResource( 5 )
 
@@ -232,15 +372,15 @@ position = Vector2( -143, 24 )
 z_index = -4096
 
 [node name="ColorRect" type="ColorRect" parent="Camera2D/Node2D"]
-margin_left = -705.0
-margin_top = -375.0
-margin_right = 1088.0
-margin_bottom = 511.0
+margin_left = -704.0
+margin_top = -377.0
+margin_right = 1089.0
+margin_bottom = 509.0
 color = Color( 0.427451, 0.588235, 0.529412, 1 )
 
 [node name="Sprite" type="Sprite" parent="."]
 texture = ExtResource( 4 )
-hframes = 28
+hframes = 30
 
 [node name="AnimationTree" type="AnimationTree" parent="Sprite"]
 tree_root = SubResource( 19 )
@@ -257,6 +397,23 @@ anims/Idle = SubResource( 2 )
 anims/Jump = SubResource( 7 )
 anims/RESET = SubResource( 3 )
 anims/Run = SubResource( 4 )
+
+[node name="Hitbox" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
+rotation = 1.5708
+shape = SubResource( 43 )
+
+[node name="Hurtbox" type="Area2D" parent="."]
+
+[node name="Normal" type="CollisionShape2D" parent="Hurtbox"]
+position = Vector2( 0, 3.5 )
+shape = SubResource( 44 )
+disabled = true
+
+[node name="Dash" type="CollisionShape2D" parent="Hurtbox"]
+position = Vector2( -0.5, 2.5 )
+shape = SubResource( 45 )
 
 [node name="JumpBuffer" type="Timer" parent="."]
 wait_time = 0.1

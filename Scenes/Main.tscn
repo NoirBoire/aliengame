@@ -239,7 +239,7 @@ autoplay = "Idle"
 anims/Idle = SubResource( 7 )
 
 [node name="Alien" parent="." instance=ExtResource( 1 )]
-position = Vector2( 182, 69 )
+position = Vector2( 109, -43 )
 
 [node name="TileMap" parent="." instance=ExtResource( 3 )]
 
@@ -248,7 +248,7 @@ position = Vector2( 182, 69 )
 [node name="Enemies" type="Node" parent="."]
 
 [node name="Drone6" parent="Enemies" instance=ExtResource( 5 )]
-position = Vector2( 663, -140 )
+position = Vector2( 663, -143 )
 
 [node name="Drone14" parent="Enemies" instance=ExtResource( 5 )]
 position = Vector2( 567, -160 )

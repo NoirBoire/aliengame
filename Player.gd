@@ -76,10 +76,13 @@ func _ready():
 	# Declare self as player on global.gd
 	
 	Global.player = self
+	
+	# Disable hitbox
+	
+	$Hitbox/CollisionShape2D.disabled = true
+	reset_hurtbox()
 
 func _physics_process(delta):
-	
-	print(motion)
 	
 	# Gravity and coyote timer check
 	was_on_floor = is_on_floor()
@@ -271,6 +274,11 @@ func stop_dash_anim(anim_only : bool):
 	$Dash/GhostTimer.stop()
 	if !anim_only:
 		motion.x = motion_x
+
+func reset_hurtbox():
+	$Hurtbox/Dash.disabled = true
+	$Hurtbox/Normal.disabled = false
+	$Hitbox/CollisionShape2D.disabled = true
 
 func die():
 	get_tree().change_scene("res://Scenes/Main.tscn")
