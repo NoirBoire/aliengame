@@ -376,7 +376,7 @@ margin_left = -704.0
 margin_top = -377.0
 margin_right = 1089.0
 margin_bottom = 509.0
-color = Color( 0.427451, 0.588235, 0.529412, 1 )
+color = Color( 0.396078, 0.662745, 0.858824, 1 )
 
 [node name="Sprite" type="Sprite" parent="."]
 texture = ExtResource( 4 )
@@ -399,12 +399,15 @@ anims/RESET = SubResource( 3 )
 anims/Run = SubResource( 4 )
 
 [node name="Hitbox" type="Area2D" parent="."]
+visible = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
 rotation = 1.5708
 shape = SubResource( 43 )
+disabled = true
 
 [node name="Hurtbox" type="Area2D" parent="."]
+visible = false
 
 [node name="Normal" type="CollisionShape2D" parent="Hurtbox"]
 position = Vector2( 0, 3.5 )

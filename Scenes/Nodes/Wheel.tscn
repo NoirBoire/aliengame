@@ -1,0 +1,221 @@
+[gd_scene load_steps=15 format=2]
+
+[ext_resource path="res://Assets/Wheel Move Wheel.png" type="Texture" id=1]
+[ext_resource path="res://Scripts/Roller.gd" type="Script" id=2]
+[ext_resource path="res://Scripts/Delta Independent Timer.gd" type="Script" id=3]
+[ext_resource path="res://Scripts/Generic Enemy Holder.gd" type="Script" id=4]
+[ext_resource path="res://Assets/Wheel Move Chassis.png" type="Texture" id=5]
+
+[sub_resource type="RectangleShape2D" id=8]
+extents = Vector2( 6.5, 5.5 )
+
+[sub_resource type="RectangleShape2D" id=2]
+extents = Vector2( 6.5, 4.5 )
+
+[sub_resource type="RectangleShape2D" id=20]
+extents = Vector2( 5, 3.5 )
+
+[sub_resource type="Animation" id=10]
+resource_name = "Enemy Step"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.2 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ 1, 0 ]
+}
+
+[sub_resource type="Animation" id=1]
+resource_name = "Idle"
+length = 2.4
+loop = true
+step = 1.2
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ 0 ]
+}
+
+[sub_resource type="Animation" id=17]
+resource_name = "Move"
+length = 4.4
+loop = true
+step = 0.08
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.4, 0.48, 0.56, 0.8, 0.88, 0.96, 1.04, 1.84, 1.92, 2, 2.24, 2.64, 2.72, 2.8, 3.04, 3.12, 3.2, 3.28 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 0, 0, 1, 0, 0, 1, 2, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 2, 0 ]
+}
+
+[sub_resource type="Animation" id=14]
+resource_name = "Damaged"
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ 1 ]
+}
+
+[sub_resource type="Animation" id=18]
+resource_name = "Move"
+length = 0.6
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3, 0.5 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 0, 1, 2, 3, 4 ]
+}
+
+[sub_resource type="Animation" id=19]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ 0 ]
+}
+
+[node name="Roller" type="KinematicBody2D"]
+z_index = -2
+collision_layer = 2
+collision_mask = 6
+script = ExtResource( 4 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
+position = Vector2( 4.5, -1.5 )
+shape = SubResource( 8 )
+
+[node name="Enemy" type="Node2D" parent="."]
+script = ExtResource( 2 )
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Enemy"]
+
+[node name="GroundChecker" type="RayCast2D" parent="Enemy"]
+visible = false
+position = Vector2( -6, 4 )
+enabled = true
+cast_to = Vector2( 0, 1 )
+collision_mask = 4
+
+[node name="WallChecker" type="RayCast2D" parent="Enemy"]
+visible = false
+position = Vector2( 5, 0 )
+enabled = true
+cast_to = Vector2( 0, 0 )
+collision_mask = 4
+
+[node name="Jumpbox" type="Area2D" parent="Enemy"]
+position = Vector2( 1, -2.40731 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Enemy/Jumpbox"]
+position = Vector2( 3.5, 0.90731 )
+shape = SubResource( 2 )
+
+[node name="Hurtbox" type="Area2D" parent="Enemy"]
+visible = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Enemy/Hurtbox"]
+position = Vector2( 4.5, -1.5 )
+shape = SubResource( 20 )
+
+[node name="Hitbox" type="Area2D" parent="Enemy"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Enemy/Hitbox"]
+position = Vector2( 4, -1.5 )
+shape = SubResource( 20 )
+
+[node name="Chassis" type="Sprite" parent="Enemy"]
+position = Vector2( -3, -12 )
+z_index = 1
+texture = ExtResource( 5 )
+centered = false
+hframes = 3
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Enemy/Chassis"]
+autoplay = "Move"
+"anims/Enemy Step" = SubResource( 10 )
+anims/Idle = SubResource( 1 )
+anims/Move = SubResource( 17 )
+
+[node name="Wheel" type="Sprite" parent="Enemy"]
+position = Vector2( -3, -12 )
+texture = ExtResource( 1 )
+centered = false
+hframes = 5
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Enemy/Wheel"]
+autoplay = "Move"
+anims/Damaged = SubResource( 14 )
+anims/Move = SubResource( 18 )
+anims/RESET = SubResource( 19 )
+
+[node name="Timers" type="Node" parent="Enemy"]
+
+[node name="DamageTimer" type="Timer" parent="Enemy/Timers"]
+wait_time = 0.05
+one_shot = true
+
+[node name="DamageAnimTimer" type="Timer" parent="Enemy/Timers"]
+wait_time = 0.3
+one_shot = true
+
+[node name="YieldTimer" type="Timer" parent="Enemy/Timers"]
+one_shot = true
+
+[node name="JumpGraceTimer" type="Timer" parent="Enemy/Timers"]
+wait_time = 0.2
+one_shot = true
+
+[node name="SlowmoTimer" type="Node2D" parent="Enemy/Timers"]
+position = Vector2( 0, 1.59269 )
+script = ExtResource( 3 )
+wait_time = 0.35
+
+[connection signal="body_entered" from="Enemy/Jumpbox" to="." method="_on_Area2D_body_entered"]
+[connection signal="body_entered" from="Enemy/Hurtbox" to="." method="_on_Area2D_body_entered"]
+[connection signal="body_entered" from="Enemy/Hitbox" to="." method="_on_Area2D_body_entered"]
+[connection signal="timeout" from="Enemy/Timers/DamageTimer" to="Enemy" method="_on_DamageTimer_timeout"]
+[connection signal="timeout" from="Enemy/Timers/DamageAnimTimer" to="Enemy" method="_on_DamageAnimTimer_timeout"]
+[connection signal="timeout" from="Enemy/Timers/YieldTimer" to="Enemy" method="_on_YieldTimer_timeout"]
+[connection signal="timeout" from="Enemy/Timers/JumpGraceTimer" to="Enemy" method="_on_JumpGraceTimer_timeout"]
+[connection signal="is_done" from="Enemy/Timers/SlowmoTimer" to="Enemy" method="_on_SlowmoTimer_is_done"]

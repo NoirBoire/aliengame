@@ -13,18 +13,6 @@ resource_name = "Attack"
 length = 0.2
 loop = true
 step = 0.2
-tracks/0/type = "value"
-tracks/0/path = NodePath(".:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/keys = {
-"times": PoolRealArray( 0 ),
-"transitions": PoolRealArray( 1 ),
-"update": 0,
-"values": [ Vector2( 0, 3 ) ]
-}
 
 [sub_resource type="Animation" id=9]
 resource_name = "Idle"
@@ -38,10 +26,10 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 0.6, 0.8, 1.2, 1.8, 2, 2.2, 2.8, 3, 3.4, 4, 4.2, 4.4 ),
-"transitions": PoolRealArray( -2, 1, 1, 1, -2, -2, -2, 1, 1, 1, 1, 1, 1 ),
+"times": PoolRealArray( 0, 0.4, 0.6, 0.8, 1, 1.2, 1.6, 1.8, 2, 2.2, 2.6, 2.8, 3, 3.2, 3.4, 3.8, 4, 4.2, 4.4 ),
+"transitions": PoolRealArray( -2, -2, 1, 1, 1, 1, 1, -2, -2, -2, -2, 1, 1, 1, 1, 1, 1, 1, 1 ),
 "update": 1,
-"values": [ Vector2( 0, 0 ), Vector2( 0, 1 ), Vector2( 0, 2 ), Vector2( 0, 3 ), Vector2( 0, 4 ), Vector2( 0, 4 ), Vector2( 0, 4 ), Vector2( 0, 3 ), Vector2( 0, 2 ), Vector2( 0, 1 ), Vector2( 0, 0 ), Vector2( 0, 0 ), Vector2( 0, 0 ) ]
+"values": [ Vector2( 0, 0 ), Vector2( 0, 0 ), Vector2( 0, 1 ), Vector2( 0, 2 ), Vector2( 0, 2 ), Vector2( 0, 3 ), Vector2( 0, 3 ), Vector2( 0, 4 ), Vector2( 0, 4 ), Vector2( 0, 4 ), Vector2( 0, 4 ), Vector2( 0, 3 ), Vector2( 0, 2 ), Vector2( 0, 2 ), Vector2( 0, 1 ), Vector2( 0, 1 ), Vector2( 0, 0 ), Vector2( 0, 0 ), Vector2( 0, 0 ) ]
 }
 
 [sub_resource type="RectangleShape2D" id=2]
@@ -111,7 +99,7 @@ position = Vector2( 0, -2 )
 shape = SubResource( 8 )
 
 [node name="Enemy" type="Node2D" parent="."]
-position = Vector2( 0, 1 )
+position = Vector2( 0, 4 )
 script = ExtResource( 2 )
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="Enemy"]
@@ -144,21 +132,31 @@ anims/Damaged = SubResource( 10 )
 anims/Idle = SubResource( 1 )
 anims/Shoot = SubResource( 12 )
 
-[node name="DamageTimer" type="Timer" parent="Enemy"]
+[node name="Timers" type="Node" parent="Enemy"]
+
+[node name="DamageTimer" type="Timer" parent="Enemy/Timers"]
 wait_time = 0.05
 one_shot = true
 
-[node name="DamageAnimTimer" type="Timer" parent="Enemy"]
+[node name="DamageAnimTimer" type="Timer" parent="Enemy/Timers"]
 wait_time = 0.3
 one_shot = true
 
-[node name="SlowmoTimer" type="Node2D" parent="Enemy"]
-position = Vector2( 0, -2.40731 )
+[node name="YieldTimer" type="Timer" parent="Enemy/Timers"]
+one_shot = true
+
+[node name="ShootTimer" type="Timer" parent="Enemy/Timers"]
+one_shot = true
+
+[node name="SlowmoTimer" type="Node2D" parent="Enemy/Timers"]
+position = Vector2( 0, 1.59269 )
 script = ExtResource( 3 )
 wait_time = 0.35
 
 [connection signal="body_entered" from="Enemy/Jumpbox" to="." method="_on_Area2D_body_entered"]
 [connection signal="body_entered" from="Enemy/Hurtbox" to="." method="_on_Area2D_body_entered"]
-[connection signal="timeout" from="Enemy/DamageTimer" to="Enemy" method="_on_DamageTimer_timeout"]
-[connection signal="timeout" from="Enemy/DamageAnimTimer" to="Enemy" method="_on_DamageAnimTimer_timeout"]
-[connection signal="is_done" from="Enemy/SlowmoTimer" to="Enemy" method="_on_SlowmoTimer_is_done"]
+[connection signal="timeout" from="Enemy/Timers/DamageTimer" to="Enemy" method="_on_DamageTimer_timeout"]
+[connection signal="timeout" from="Enemy/Timers/DamageAnimTimer" to="Enemy" method="_on_DamageAnimTimer_timeout"]
+[connection signal="timeout" from="Enemy/Timers/YieldTimer" to="Enemy" method="_on_YieldTimer_timeout"]
+[connection signal="timeout" from="Enemy/Timers/ShootTimer" to="Enemy" method="_on_ShootTimer_timeout"]
+[connection signal="is_done" from="Enemy/Timers/SlowmoTimer" to="Enemy" method="_on_SlowmoTimer_is_done"]

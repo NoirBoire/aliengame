@@ -25,6 +25,9 @@ var spawn_x
 var spawn_y
 var spawn_coordinates := Vector2()
 var can_flip := true
+var yield_function = "_pass"
+var can_return = false
+var hp_to_lose = 0
 
 # Onready vars
 onready var alien := owner.owner.get_node("Alien")
@@ -42,7 +45,7 @@ func _ready():
 func _physics_process(delta):
 	
 	#if owner.name == "Drone7":
-	#	print(state)
+	#	print(hp_to_lose)
 	
 	if owner.position.distance_to(spawn_coordinates) > 150:
 		state = RETURN
@@ -50,10 +53,7 @@ func _physics_process(delta):
 		state = RETURN
 	
 	# Check for jump on alien
-	if (Input.is_action_just_pressed(Global.button_jump) || !alien.jump_buffer.is_stopped()) && player_colliding:
-		if alien.position.y > global_position.y+3:
-			alien.position.y = global_position.y
-		alien.can_dash = true
+	
 	
 	if owner.has_node("CollisionShape2D"):
 		owner.get_node("CollisionShape2D").position = Vector2(position.x, position.y+3)
@@ -69,9 +69,19 @@ func _physics_process(delta):
 		if alien.dash_anim && alien.motion.y >= 0 && $Hurtbox.overlaps_area(alien.get_node("Hitbox")):
 			if can_slowmo:
 				alien.slowmo.start_slowmo()
+				hp_to_lose = 2
 				state = DAMAGED
-				$SlowmoTimer.start()
+				$Timers/SlowmoTimer.start()
 				can_slowmo = false
+				
+		if (Input.is_action_just_pressed(Global.button_jump) || !alien.jump_buffer.is_stopped()) && player_colliding:
+			if alien.position.y > global_position.y+3:
+				alien.position.y = global_position.y
+			alien.can_dash = true
+			if state == DAMAGED:
+				if hp_to_lose > 0:
+					hp_to_lose -= 1
+					pass
 	else:
 		player_colliding = false
 		if state != DAMAGED:
@@ -94,11 +104,12 @@ func _physics_process(delta):
 					$Sprite.flip_h = false
 			else:
 				$Sprite.flip_h = false
-			if check_distance(alien) < 100 && abs(alien.position.y - owner.position.y) < 30:
+			if check_distance(alien) < 120 && abs(alien.position.y - owner.position.y) < 30:
 				if check_for_body(alien, alien.position):
 					state = SHOOT
 			# Animation
 			$Sprite/AnimationPlayer.current_animation = "Idle"
+			$AnimationPlayer.playback_speed = 1
 			$AnimationPlayer.play()
 		DAMAGED:
 			if !taking_damage:
@@ -108,18 +119,28 @@ func _physics_process(delta):
 					elif alien.position.x < owner.position.x:
 						$Sprite.flip_h = true
 				motion_x = (knockback_speed if !$Sprite.flip_h else -knockback_speed)
-				owner.hp -= 1
 				taking_damage = true
-				$DamageTimer.start()
-			$AnimationPlayer.stop(false)
+				can_fire = true
+				$Timers/ShootTimer.stop()
+				$Timers/DamageTimer.start()
+			$AnimationPlayer.stop(true)
 			if owner.hp <= 0:
 				if owner.has_node("CollisionShape2D"):
 					owner.get_node("CollisionShape2D").queue_free()
 			# Animation
+			$AnimationPlayer.playback_speed = 1
 			$Sprite/AnimationPlayer.current_animation = "Damaged"
 		SHOOT:
 			# Animation
-			$AnimationPlayer.stop(false)
+			if position.y != 0:
+				$AnimationPlayer.playback_speed = 8
+				if $AnimationPlayer.current_animation_position >= 2:
+					$AnimationPlayer.play("Idle")
+				else:
+					$AnimationPlayer.play_backwards("Idle")
+			else:
+				$AnimationPlayer.stop(true)
+				$AnimationPlayer.playback_speed = 1
 			
 			if (abs(alien.position.x - owner.position.x) < 100):
 				if check_for_body(alien, alien.position):
@@ -131,59 +152,44 @@ func _physics_process(delta):
 							$Sprite.flip_h = false
 					var position_to_check = Vector2(owner.position.x + (100 * (1 if $Sprite.flip_h else -1)), owner.position.y+16)
 					if abs(global_position.y - alien.position.y) < 24:
-						yield(get_tree().create_timer(rand_range(1, 1.5)),"timeout")
-						if can_fire && state != DAMAGED:
-							$Sprite/AnimationPlayer.current_animation = "Shoot"
-							$Sprite/AnimationPlayer.play()
-							
-							# Shoot bullet
-							var bullet: KinematicBody2D = bullet_scene.instance()
-							owner.owner.add_child(bullet)
-							bullet.global_position.y = global_position.y + 3
-							bullet.global_position.x = (global_position.x -4 if !$Sprite.flip_h else global_position.x + 8)
-							bullet.motion_x = (-72 if !$Sprite.flip_h else 72)
-							
-							# Bullet shockwave
-							var shockwave: Node2D = shockwave_scene.instance()
-							owner.owner.add_child(shockwave)
-							shockwave.global_position.x = (global_position.x -4 if !$Sprite.flip_h else global_position.x + 7)
-							shockwave.global_position.y = global_position.y + 3
+						if can_fire:
+							$Timers/ShootTimer.start()
 							can_fire = false
-							yield(get_tree().create_timer(1.5),"timeout")
-							can_fire = true
 		RETURN:
 			owner.motion.x = 0
 			owner.motion.y = 0
-			yield(get_tree().create_timer(2),"timeout")
-			if abs(owner.position.x - spawn_x) > 20 || abs(owner.position.y - spawn_y) > 20:
+			if $Timers/YieldTimer.is_stopped():
+				custom_yield(2.0, "_return")
+			if (abs(owner.position.x - spawn_x) > 20 || abs(owner.position.y - spawn_y) > 20) && can_return:
+				$AnimationPlayer.playback_speed = 1
 				$AnimationPlayer.play()
 				if owner.position.x > spawn_x:
-					motion_x = -speed
+					motion_x = -speed/3
 					$Sprite.flip_h = false
 				elif owner.position.x < spawn_x:
-					motion_x = speed
+					motion_x = speed/3
 					$Sprite.flip_h = true
 			else:
+				can_return = false
 				state = IDLE
 			# Animation
 			$AnimationPlayer.play()
 			
-			
 	# Horizontal movement
 	owner.motion.x = lerp(owner.motion.x, motion_x, ((1 / ((1.0/Engine.get_frames_per_second())/delta)) if abs(motion_x) > 0 else (0.1 / ((1.0/Engine.get_frames_per_second())/delta))))
-	owner.motion.y = lerp(owner.motion.y, motion_y, ((0.5 / ((1.0/Engine.get_frames_per_second())/delta))))
 	
 # Timer timeouts
 func _on_DamageTimer_timeout():
 	motion_x = 0
-	$DamageAnimTimer.start()
+	$Timers/DamageAnimTimer.start()
 func _on_DamageAnimTimer_timeout():
+	owner.hp -= hp_to_lose
+	hp_to_lose = 0
 	if owner.hp <= 0:
 		die()
 	taking_damage = false
 	$Sprite/AnimationPlayer.current_animation = "Idle"
 	state = SHOOT
-	yield(get_tree().create_timer(0.75),"timeout")
 func _on_SlowmoTimer_is_done():
 	alien.slowmo.end_slowmo()
 
@@ -211,3 +217,37 @@ func check_line_of_sight(body : Vector2) -> Object:
 	return null
 func die():
 	owner.queue_free()
+func custom_yield(time : float, function):
+	$Timers/YieldTimer.stop()
+	$Timers/YieldTimer.wait_time = time
+	$Timers/YieldTimer.start()
+	yield_function = function
+func shoot():
+	if state != DAMAGED:
+		$Sprite/AnimationPlayer.current_animation = "Shoot"
+		$Sprite/AnimationPlayer.play()
+		
+		# Shoot bullet
+		var bullet: KinematicBody2D = bullet_scene.instance()
+		owner.owner.add_child(bullet)
+		bullet.global_position.y = global_position.y + 3
+		bullet.global_position.x = (global_position.x -4 if !$Sprite.flip_h else global_position.x + 8)
+		bullet.motion_x = (-72 if !$Sprite.flip_h else 72)
+		
+		# Bullet shockwave
+		var shockwave: Node2D = shockwave_scene.instance()
+		owner.owner.add_child(shockwave)
+		shockwave.global_position.x = (global_position.x -4 if !$Sprite.flip_h else global_position.x + 7)
+		shockwave.global_position.y = global_position.y + 3
+		
+		can_fire = true
+func _pass():
+	pass
+func _return():
+	can_return = true
+
+func _on_YieldTimer_timeout():
+	call(yield_function)
+
+func _on_ShootTimer_timeout():
+	shoot()
