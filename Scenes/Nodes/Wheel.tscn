@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=2]
+[gd_scene load_steps=16 format=2]
 
 [ext_resource path="res://Assets/Wheel Move Wheel.png" type="Texture" id=1]
 [ext_resource path="res://Scripts/Roller.gd" type="Script" id=2]
@@ -10,7 +10,7 @@
 extents = Vector2( 6.5, 5.5 )
 
 [sub_resource type="RectangleShape2D" id=2]
-extents = Vector2( 6.5, 4.5 )
+extents = Vector2( 7.5, 6 )
 
 [sub_resource type="RectangleShape2D" id=20]
 extents = Vector2( 5, 3.5 )
@@ -67,6 +67,24 @@ tracks/0/keys = {
 "values": [ 0, 0, 1, 0, 0, 1, 2, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 2, 0 ]
 }
 
+[sub_resource type="Animation" id=21]
+resource_name = "Move Alarm"
+length = 4.4
+loop = true
+step = 0.08
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.4, 0.48, 0.56, 0.8, 0.88, 0.96, 1.04, 1.84, 1.92, 2, 2.24, 2.64, 2.72, 2.8, 3.04, 3.12, 3.2, 3.28 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 3, 3, 4, 3, 4, 4, 5, 3, 3, 4, 3, 3, 3, 4, 3, 3, 4, 5, 3 ]
+}
+
 [sub_resource type="Animation" id=14]
 resource_name = "Damaged"
 tracks/0/type = "value"
@@ -121,11 +139,11 @@ collision_mask = 6
 script = ExtResource( 4 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-visible = false
-position = Vector2( 4.5, -1.5 )
+position = Vector2( 0.5, 0.5 )
 shape = SubResource( 8 )
 
 [node name="Enemy" type="Node2D" parent="."]
+position = Vector2( -4, 2 )
 script = ExtResource( 2 )
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="Enemy"]
@@ -148,7 +166,7 @@ collision_mask = 4
 position = Vector2( 1, -2.40731 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Enemy/Jumpbox"]
-position = Vector2( 3.5, 0.90731 )
+position = Vector2( 3.5, 0.40731 )
 shape = SubResource( 2 )
 
 [node name="Hurtbox" type="Area2D" parent="Enemy"]
@@ -169,13 +187,15 @@ position = Vector2( -3, -12 )
 z_index = 1
 texture = ExtResource( 5 )
 centered = false
-hframes = 3
+hframes = 6
+frame = 3
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="Enemy/Chassis"]
 autoplay = "Move"
 "anims/Enemy Step" = SubResource( 10 )
 anims/Idle = SubResource( 1 )
 anims/Move = SubResource( 17 )
+"anims/Move Alarm" = SubResource( 21 )
 
 [node name="Wheel" type="Sprite" parent="Enemy"]
 position = Vector2( -3, -12 )

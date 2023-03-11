@@ -1,9 +1,9 @@
 extends KinematicBody2D
+class_name Ploopy
 
 # Constants
 const max_speed := 64
 const speed := 64
-const motion := Vector2()
 const UP := Vector2(0, -1)
 const max_jump_height := 2.25 * Global.UNIT_SIZE
 const min_jump_height := 0.25 * Global.UNIT_SIZE
@@ -26,6 +26,7 @@ enum {
 var state = IDLE
 
 # Basic movement vars
+var motion := Vector2()
 var motion_x := 0
 
 # Jump vars
@@ -36,6 +37,7 @@ var gravity
 var is_jumping := false
 var was_on_floor
 var jump_buffer_jump := false
+var invincible := false
 
 # Dash vars
 var speed_modifier := 1
@@ -215,7 +217,7 @@ func _physics_process(delta):
 	else:
 		if !is_jumping:
 			if !air_dash:
-				anim_state.travel("Dash")
+				anim_state.travel("Air Dash")
 			elif air_dash:
 				anim_state.travel("Air Dash")
 		elif is_jumping:
@@ -259,6 +261,8 @@ func dash():
 		dash_anim = true
 		can_dash = false
 		speed_modifier = dash_speed
+		$Invincibility.start()
+		invincible = true
 		$Dash/DashTimer.wait_time = dash_duration
 		$Dash/DashAnimTimer.wait_time = dash_duration*1.4
 		$Dash/DashTimer.start()
@@ -284,7 +288,8 @@ func die():
 	get_tree().change_scene("res://Scenes/Main.tscn")
 
 func take_damage():
-	state = DAMAGED
+	if !invincible:
+		state = DAMAGED
 
 func _on_DashJumpBuffer_is_done():
 	if buffering_dash && buffering_jump:
@@ -307,3 +312,7 @@ func _on_DamageTimer_timeout():
 		die()
 	else:
 		state = IDLE
+
+
+func _on_Invincibility_timeout() -> void:
+	invincible = false;
