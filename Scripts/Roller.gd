@@ -31,8 +31,8 @@ var hp_to_lose = 0
 var jump_grace = false
 
 # Onready vars
-onready var alien := owner.owner.get_node("Alien")
-onready var coyote_timer = alien.coyote_timer
+@onready var alien := owner.owner.get_node("Alien")
+@onready var coyote_timer = alien.coyote_timer
 
 func _ready():
 	sprites_flipped = owner.start_flip
@@ -86,7 +86,7 @@ func _physics_process(delta):
 	if !$GroundChecker.is_colliding() || $WallChecker.is_colliding():
 		sprites_flipped = !sprites_flipped
 	$GroundChecker.position.x = -10 if !sprites_flipped else 21
-	$WallChecker.cast_to.x = - 12 if !sprites_flipped else 12
+	$WallChecker.target_position.x = - 12 if !sprites_flipped else 12
 	
 	# Disable jump grace
 	if jump_grace:
@@ -100,19 +100,19 @@ func _physics_process(delta):
 		if check_distance(alien) <= 100:
 			if check_for_body(alien, alien.position):
 				$Chassis/AnimationPlayer.current_animation = str(current_animation + " Alarm")
-				$Chassis/AnimationPlayer.playback_speed = 1.2
-				$Wheel/AnimationPlayer.playback_speed = 1.2
+				$Chassis/AnimationPlayer.set_speed_scale(1.2)
+				$Wheel/AnimationPlayer.set_speed_scale(1.2)
 				motion_multiplier = 2
 			else:
 				$Chassis/AnimationPlayer.current_animation = current_animation
 				motion_multiplier = 1
-				$Chassis/AnimationPlayer.playback_speed = 1
-				$Wheel/AnimationPlayer.playback_speed = 1
+				$Chassis/AnimationPlayer.set_speed_scale(1.0)
+				$Wheel/AnimationPlayer.set_speed_scale(1.0)
 		else:
 			$Chassis/AnimationPlayer.current_animation = current_animation
 			motion_multiplier = 1
-			$Chassis/AnimationPlayer.playback_speed = 1
-			$Wheel/AnimationPlayer.playback_speed = 1
+			$Chassis/AnimationPlayer.set_speed_scale(1.0)
+			$Wheel/AnimationPlayer.set_speed_scale(1.0)
 	$Wheel/AnimationPlayer.current_animation = current_animation
 	# Statemachine
 	match state:
@@ -145,9 +145,9 @@ func _physics_process(delta):
 #			owner.motion.x = 0
 #			owner.motion.y = 0
 #			if $Timers/YieldTimer.is_stopped():
-#				custom_yield(2.0, "_return")
+#				custom_await 2.0._return
 #			if (abs(owner.position.x - spawn_x) > 20 || abs(owner.position.y - spawn_y) > 20) && can_return:
-#				$AnimationPlayer.playback_speed = 1
+#				$AnimationPlayer.set_speed_scale(1.0)
 #				$AnimationPlayer.play()
 #				if owner.position.x > spawn_x:
 #					motion_x = -speed/3
@@ -161,7 +161,7 @@ func _physics_process(delta):
 			pass
 			
 	# Horizontal movement
-	owner.motion.x = lerp(owner.motion.x, motion_x*motion_multiplier, ((0.2 / ((1.0/Engine.get_frames_per_second())/delta)) if abs(motion_x) > 0 else (0.2 / ((1.0/Engine.get_frames_per_second())/delta))))
+	owner.motion.x = lerp(owner.motion.x, motion_x*motion_multiplier*1.0, ((0.2 / ((1.0/Engine.get_frames_per_second())/delta)) if abs(motion_x) > 0 else (0.2 / ((1.0/Engine.get_frames_per_second())/delta))))
 	
 # Timer timeouts
 func _on_DamageTimer_timeout():
@@ -191,7 +191,12 @@ func check_distance(body) -> float:
 		return sqrt(pow((body.position.x - owner.position.x), 2)+pow((body.position.y - owner.position.y), 2))
 func check_for_body(body, target : Vector2) -> bool:
 	var space_state = get_world_2d().direct_space_state
-	var sight_check = space_state.intersect_ray(global_position, target, [self, owner], 1)
+	var params = PhysicsRayQueryParameters2D.new()
+	params.from = global_position
+	params.to = target
+	params.collision_mask = 1
+	params.exclude = [self, owner]
+	var sight_check = space_state.intersect_ray(params)
 	
 	if sight_check:
 		if sight_check.collider.name == body.name:
@@ -202,15 +207,20 @@ func check_for_body(body, target : Vector2) -> bool:
 		return false
 func check_line_of_sight(body : Vector2) -> Object:
 	var space_state = get_world_2d().direct_space_state
-	var sight_check = space_state.intersect_ray(global_position, body, [self, owner], owner.collision_mask)
+	var params = PhysicsRayQueryParameters2D.new()
+	params.from = global_position
+	params.to = body
+	params.collision_mask = owner.collision_mask
+	params.exclude = [self, owner]
+	var sight_check = space_state.intersect_ray(params)
 	if sight_check:
 		return sight_check["collider"]
 	return null
 func die():
 	owner.get_parent().add_child(owner.particol)
 	owner.particol.position = owner.position
-	owner.particol.get_node("ViewportContainer").get_node("Viewport").get_node("Particles2D").emitting = true
-	owner.particol.get_node("ViewportContainer").get_node("Viewport").get_node("Particles2D2").emitting = true
+	owner.particol.get_node("SubViewportContainer").get_node("SubViewport").get_node("GPUParticles2D").emitting = true
+	owner.particol.get_node("SubViewportContainer").get_node("SubViewport").get_node("Particles2D2").emitting = true
 	owner.queue_free()
 func custom_yield(time : float, function):
 	$Timers/YieldTimer.stop()

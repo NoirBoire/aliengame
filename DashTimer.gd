@@ -1,16 +1,15 @@
 extends Node
 
-onready var ghost_scene = preload("res://Scenes/Nodes/DashGhost.tscn")
-onready var sprite = owner.get_node("Sprite")
-onready var alien = owner
+@onready var ghost_scene = preload("res://Scenes/Nodes/DashGhost.tscn")
+@onready var sprite = owner.get_node("Sprite2D")
+@onready var alien = owner
 
 func _ready():
-	$DashTimer.process_mode = Timer.TIMER_PROCESS_IDLE
-	$DashAnimTimer.process_mode = Timer.TIMER_PROCESS_IDLE
+	pass
 
 func instance_ghost():
 	
-	var ghost: Sprite = ghost_scene.instance()
+	var ghost: Sprite2D = ghost_scene.instantiate()
 	alien.owner.add_child(ghost)
 	
 	ghost.texture = sprite.texture

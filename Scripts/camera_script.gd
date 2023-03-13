@@ -1,11 +1,11 @@
 extends Camera2D
 
-export (NodePath) onready var player = owner.get_node("Alien")
+@export (NodePath) onready var player = owner.get_node("Alien")
 
-onready var game_size := Vector2(80, 45)
-onready var window_scale := (OS.window_size / game_size).x
+@onready var game_size := Vector2(80, 45)
+@onready var window_scale := (get_window().size / game_size).x
 
-onready var actual_cam_pos := global_position
+@onready var actual_cam_pos := global_position
 
 
 func _process(delta):
@@ -24,8 +24,8 @@ func _process(delta):
 	# Calculate the "subpixel" position of the new camera position
 	var cam_subpixel_pos = actual_cam_pos.round() - actual_cam_pos
 	
-	# Update the Main ViewportContainer's shader uniform
-	Global.viewport_container.material.set_shader_param("cam_offset", cam_subpixel_pos )
+	# Update the Main SubViewportContainer's shader uniform
+	Global.viewport_container.material.set_shader_parameter("cam_offset", cam_subpixel_pos )
 	
 	# Set the camera's position to the new position and round it.
 	global_position = actual_cam_pos.round()

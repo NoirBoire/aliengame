@@ -1,6 +1,6 @@
-extends KinematicBody2D
+extends CharacterBody2D
 
-onready var player = owner.get_node("Alien")
+@onready var player = owner.get_node("Alien")
 var check_for_bodies := false
 
 func _on_Area2D_body_entered(body):

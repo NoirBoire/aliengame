@@ -1,6 +1,6 @@
 extends Node2D
 
 
-func _process(delta):
-	if !$Sprite/AnimationPlayer.is_playing():
+func _process(_delta):
+	if !$Sprite2D/AnimationPlayer.is_playing():
 		queue_free()

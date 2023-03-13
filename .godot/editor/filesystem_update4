@@ -1,0 +1,5 @@
+res://default_env.tres
+res://Scenes/Main.tscn
+res://Tilesets/Tileset.tres
+res://Scenes/Nodes/Drone.tscn
+res://Scenes/Nodes/Wheel.tscn

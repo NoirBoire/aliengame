@@ -1,0 +1,70 @@
+2a60927148abd1d33b818b535e306557
+::res://::1678728912
+DashTimer.gd::GDScript::-1::1678613416::0::1::::<>Node<>::
+default_env.tres::Environment::2960938580698063368::1678665329::0::1::::<><>::
+export_presets.cfg::TextFile::-1::1660579295::0::1::::<><>::
+Global.gd::GDScript::-1::1678613355::0::1::::<>Node<>::
+icon.png::CompressedTexture2D::4170118092617105791::1659114967::1678613369::1::::<><>::
+Player.gd::GDScript::-1::1678663297::0::1::::Ploopy<>CharacterBody2D<>::
+README.md::TextFile::-1::1660763135::0::1::::<><>::
+TEST.tscn::PackedScene::-1::1678613355::0::1::::<><>::res://Scenes/Nodes/Bullet.tscn<>res://Scenes/Nodes/TileMap.tscn<>res://Scenes/Nodes/Alien.tscn
+::res://aliengame/::1660467865
+README.md::TextFile::-1::1660467865::0::1::::<><>::
+::res://Assets/::1678616777
+Alien.png::CompressedTexture2D::5998234056302020112::1678543459::1678616777::1::::<><>::
+Bullet2.png::CompressedTexture2D::6296715854574172753::1670064826::1678613369::1::::<><>::
+Bullet.png::CompressedTexture2D::6375182975373611933::1661018090::1678613369::1::::<><>::
+Drone.png::CompressedTexture2D::1137144329133682272::1663323175::1678613369::1::::<><>::
+Explosion.png::CompressedTexture2D::179099082641574474::1678536101::1678613369::1::::<><>::
+Particle.png::CompressedTexture2D::5465723766624302787::1661943357::1678613369::1::::<><>::
+Rat.png::CompressedTexture2D::8599804590079011160::1660596343::1678613369::1::::<><>::
+Secret.png::CompressedTexture2D::8622866884778105645::1659423058::1678613369::1::::<><>::
+Shockwave1.png::CompressedTexture2D::2557142010279254171::1662804271::1678613369::1::::<><>::
+Shockwave.png::CompressedTexture2D::9139707860071222043::1661960323::1678613369::1::::<><>::
+Spike.png::CompressedTexture2D::8568214091272678393::1659351601::1678613369::1::::<><>::
+Spring.png::CompressedTexture2D::140595939735743748::1670066224::1678613369::1::::<><>::
+TileA.png::CompressedTexture2D::8657779812006043788::1659188602::1678613369::1::::<><>::
+Wheel Move Chassis.png::CompressedTexture2D::2053034154976031115::1662885267::1678613369::1::::<><>::
+Wheel Move Wheel.png::CompressedTexture2D::2526070868915285815::1662282084::1678613369::1::::<><>::
+YDrone.png::CompressedTexture2D::6558457525118060428::1662792438::1678613369::1::::<><>::
+::res://Concepts/::1678613369
+irkalla.png::CompressedTexture2D::2679320733571716377::1662236484::1678613369::1::::<><>::
+::res://Export/::1660762681
+::res://Misc/::1661640513
+resolution.txt::TextFile::-1::1661640513::0::1::::<><>::
+::res://Scenes/::1678665160
+Game.tscn::PackedScene::1207107058645695281::1678664323::0::1::::<><>::uid://bemq5fhcqoryk<>res://Scripts/Game.gd
+Main.tscn::PackedScene::2692973910538562798::1678665160::0::1::::<><>::uid://dlu5jxm808g7n<>uid://c80n55k76vtop<>res://Scenes/Nodes/TileMap.tscn<>uid://00s34p85wnyh<>uid://cjs5dy8eh7fq5<>uid://du38mfuartwbl<>res://Scripts/Secret.gd<>uid://bsvput3vfj6tg
+::res://Scenes/Effects/::1678664355
+BulletShockwave.tscn::PackedScene::4046982405033661081::1678664355::0::1::::<><>::uid://d3hlwhart0y2n<>res://Scripts/BulletShockwave.gd
+::res://Scenes/Nodes/::1678665329
+Alien.png::CompressedTexture2D::3204131829900656286::1659121376::1678613369::1::::<><>::
+Alien.tscn::PackedScene::7974465696215781661::1678664323::0::1::::<><>::uid://c1nftongtxy1a<>res://Player.gd<>res://Scripts/Delta Independent Timer.gd<>uid://crpubktlsm6do<>res://Scripts/Slowmo.gd
+Bullet.tscn::PackedScene::6317893652702067105::1678664348::0::1::::<><>::uid://cw3glj87dvfhd<>res://Scripts/Bullet.gd<>uid://cvyf8wvmv7rs0
+BulletParticle.tscn::PackedScene::581955366968943330::1678664323::0::1::::<><>::
+Dash.tscn::PackedScene::6624926483534141500::1678664323::0::1::::<><>::res://DashTimer.gd
+DashGhost.tscn::PackedScene::224741792700862043::1678663723::0::1::::<><>::res://Scripts/DashGhost.gd<>uid://crpubktlsm6do
+DeathParticle.tscn::PackedScene::8543998222938142399::1678664323::0::1::::<><>::uid://cs00aq6ahfa5
+Drone.tscn::PackedScene::5443527938597587458::1678665160::0::1::::<><>::uid://qg3uoyhdy8ee<>res://Scripts/Drone.gd<>res://Scripts/Delta Independent Timer.gd<>res://Scripts/Generic Enemy Holder.gd
+Secret.tscn::PackedScene::8819439522471875526::1678664372::0::1::::<><>::uid://cj4vw3xy4ok2f
+Spike.tscn::PackedScene::1807474990790997467::1678664323::0::1::::<><>::res://Scripts/Spike.gd<>uid://ducrh72ay60r2
+Spring.tscn::PackedScene::3694119314941926336::1678664323::0::1::::<><>::uid://caduhlu3v1wi<>res://Scripts/Spring.gd
+TileMap.tscn::PackedScene::-1::1678613356::0::1::::<><>::res://Tilesets/Tileset.tres
+Wheel.tscn::PackedScene::7141527138660632399::1678665329::0::1::::<><>::uid://bb8wau8jdvnvb<>res://Scripts/Roller.gd<>res://Scripts/Delta Independent Timer.gd<>res://Scripts/Generic Enemy Holder.gd<>uid://4irf4rdofqe2
+::res://Scripts/::1678665209
+Bullet.gd::GDScript::-1::1678664550::0::1::::<>CharacterBody2D<>::
+BulletShockwave.gd::GDScript::-1::1678664591::0::1::::<>Node2D<>::
+camera_script.gd::GDScript::-1::1678613355::0::1::::<>Camera2D<>::
+DashGhost.gd::GDScript::-1::1678663723::0::1::::<>Sprite2D<>::
+Delta Independent Timer.gd::GDScript::-1::1678613355::0::1::::<>Node2D<>::
+Drone.gd::GDScript::-1::1678664595::0::1::::<>Node2D<>::
+Game.gd::GDScript::-1::1678613355::0::1::::<>Node<>::
+Generic Enemy Holder.gd::GDScript::-1::1678620081::0::1::::<>CharacterBody2D<>::
+Roller.gd::GDScript::-1::1678665209::0::1::::<>Node2D<>::
+Secret.gd::GDScript::-1::1678620105::0::1::::<>CharacterBody2D<>::
+Slowmo.gd::GDScript::-1::1678664297::0::1::::<>Node<>::
+Spike.gd::GDScript::-1::1678613356::0::1::::<>CharacterBody2D<>::
+Spring.gd::GDScript::-1::1678620117::0::1::::<>Node2D<>::
+::res://Tilesets/::1678661233
+Tiles.tscn::PackedScene::-1::1678613355::0::1::::<><>::res://Assets/TileA.png
+Tileset.tres::TileSet::8728532221344315269::1678661233::0::1::::<><>::uid://dvl5msc6d32bo

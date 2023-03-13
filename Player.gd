@@ -1,4 +1,4 @@
-extends KinematicBody2D
+extends CharacterBody2D
 class_name Ploopy
 
 # Constants
@@ -54,10 +54,10 @@ var buffering_dash := false
 var hp = 5
 
 # Child vars
-onready var coyote_timer = $CoyoteTimer
-onready var jump_buffer = $JumpBuffer
-onready var slowmo = $Slowmo
-onready var anim_state = $Sprite/AnimationTree.get("parameters/playback")
+@onready var coyote_timer = $CoyoteTimer
+@onready var jump_buffer = $JumpBuffer
+@onready var slowmo = $Slowmo
+@onready var anim_state = $Sprite2D/AnimationTree.get("parameters/playback")
 
 # Controls
 var button_left := Global.button_left
@@ -95,7 +95,9 @@ func _physics_process(delta):
 		motion.y = 0
 
 	
-	move_and_slide(motion, UP)
+	set_velocity(motion)
+	set_up_direction(UP)
+	move_and_slide()
 	
 	if is_on_floor():
 		
@@ -122,10 +124,10 @@ func _physics_process(delta):
 			motion_x = 0
 		MOVE_RIGHT:
 			motion_x = speed
-			$Sprite.flip_h = false
+			$Sprite2D.flip_h = false
 		MOVE_LEFT:
 			motion_x = -speed
-			$Sprite.flip_h = true
+			$Sprite2D.flip_h = true
 		JUMP:
 			jump()
 		JUMP_RELEASE:
@@ -146,12 +148,12 @@ func _physics_process(delta):
 				if motion.y > 0:
 					motion.y = 0
 				motion.y = max_jump_vel/1.2
-				if $Sprite.flip_h:
+				if $Sprite2D.flip_h:
 					motion.x = 100
-				elif !$Sprite.flip_h:
+				elif !$Sprite2D.flip_h:
 					motion.x = -100
 				$DamageTimer.start()
-			motion.x = lerp(motion.x, motion_x, 0.05)
+			motion.x = lerp(motion.x, motion_x*1.0, 0.05)
 	
 	# Horizontal movement and stopping
 	if state != DAMAGED:
@@ -163,7 +165,7 @@ func _physics_process(delta):
 			else:
 				state = IDLE
 		elif motion_x == 0:
-			motion_x = -speed*(1 if $Sprite.flip_h else -1)
+			motion_x = -speed*(1 if $Sprite2D.flip_h else -1)
 	
 	# Dashing
 	if Input.is_action_just_pressed(button_dash):
@@ -199,7 +201,7 @@ func _physics_process(delta):
 	
 	# Move player
 	if state != DAMAGED:
-		motion.x = lerp(motion.x, motion_x*speed_modifier, (0.5 / ((1.0/Engine.get_frames_per_second())/delta) if dashing 
+		motion.x = lerp(motion.x, motion_x*speed_modifier*1.0, (0.5 / ((1.0/Engine.get_frames_per_second())/delta) if dashing 
 		else ((0.2 / ((1.0/Engine.get_frames_per_second())/delta)) if abs(motion_x) > 0 else 0.8)))
 	
 	# Animation
@@ -229,10 +231,11 @@ func _physics_process(delta):
 	if position.y > 500:
 		die()
 	if Input.is_action_pressed("ui_alt") && Input.is_action_just_pressed("ui_enter"):
-		OS.window_fullscreen = !OS.window_fullscreen
+		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_EXCLUSIVE_FULLSCREEN)# if (!((get_window().mode == Window.MODE_EXCLUSIVE_FULLSCREEN) or (get_window().mode == Window.MODE_FULLSCREEN))) else Window.MODE_WINDOWED
 
 	
 func jump():
+	print("hi")
 	if state != DAMAGED:
 		if is_on_floor() || !coyote_timer.is_stopped():
 			if dashing && !air_dash:
@@ -252,7 +255,7 @@ func jump():
 			jump_buffer.start()
 
 func dash():
-	if state != DAMAGED:
+	if state != DAMAGED && $DashCooldown.is_stopped():
 		if is_on_floor():
 			air_dash = false
 		else:
@@ -268,6 +271,7 @@ func dash():
 		$Dash/DashTimer.start()
 		$Dash/DashAnimTimer.start()
 		$Dash/GhostTimer.start()
+		$DashCooldown.start()
 
 func stop_dashing():
 	speed_modifier = 1
@@ -285,7 +289,7 @@ func reset_hurtbox():
 	$Hitbox/CollisionShape2D.disabled = true
 
 func die():
-	get_tree().change_scene("res://Scenes/Main.tscn")
+	get_tree().change_scene_to_file("res://Scenes/Main.tscn")
 
 func take_damage():
 	if !invincible:
