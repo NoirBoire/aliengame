@@ -7,7 +7,7 @@
 [ext_resource type="Script" path="res://Scripts/Slowmo.gd" id="5"]
 
 [sub_resource type="RectangleShape2D" id="5"]
-size = Vector2(4, 9)
+size = Vector2(4, 12)
 
 [sub_resource type="AnimationNodeAnimation" id="34"]
 animation = &"Air Dash"
@@ -114,7 +114,7 @@ states/Run/node = SubResource("11")
 states/Run/position = Vector2(68, 97)
 states/Start/position = Vector2(332, 4)
 transitions = ["Jump", "Fall", SubResource("12"), "Idle", "Run", SubResource("13"), "Run", "Jump", SubResource("15"), "Idle", "Jump", SubResource("16"), "Run", "Fall", SubResource("17"), "Idle", "Fall", SubResource("18"), "Fall", "Run", SubResource("21"), "Idle", "Dash", SubResource("25"), "Run", "Dash", SubResource("26"), "Jump", "Dash", SubResource("27"), "Fall", "Dash", SubResource("28"), "Dash", "Idle", SubResource("29"), "Dash", "Run", SubResource("30"), "Dash", "Jump", SubResource("31"), "Dash", "Fall", SubResource("32"), "Air Dash", "Jump", SubResource("35"), "Air Dash", "Idle", SubResource("36"), "Air Dash", "Run", SubResource("37"), "Air Dash", "Fall", SubResource("38"), "Jump", "Air Dash", SubResource("39"), "Idle", "Air Dash", SubResource("40"), "Run", "Air Dash", SubResource("41"), "Fall", "Air Dash", SubResource("42"), "Land", "Idle", SubResource("49"), "Land", "Jump", SubResource("50"), "Land", "Run", SubResource("51"), "Land", "Dash", SubResource("52"), "Land", "Air Dash", SubResource("53"), "Land", "Fall", SubResource("54"), "Run", "Idle", SubResource("14"), "Fall", "Jump", SubResource("55"), "Jump", "Land", SubResource("56"), "Fall", "Land", SubResource("57")]
-graph_offset = Vector2(-27.2328, -1.72001)
+graph_offset = Vector2(461.178, -1.72001)
 
 [sub_resource type="AnimationNodeStateMachinePlayback" id="20"]
 
@@ -396,14 +396,14 @@ _data = {
 }
 
 [sub_resource type="CapsuleShape2D" id="43"]
-radius = 4.0
-height = 22.0
+radius = 5.0
+height = 24.0
 
 [sub_resource type="RectangleShape2D" id="44"]
 size = Vector2(4, 9)
 
 [sub_resource type="RectangleShape2D" id="45"]
-size = Vector2(11, 3.25)
+size = Vector2(6, 3)
 
 [node name="Alien" type="CharacterBody2D"]
 texture_filter = 1
@@ -412,7 +412,7 @@ script = ExtResource("2")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 visible = false
-position = Vector2(0, 3.5)
+position = Vector2(0, 2)
 shape = SubResource("5")
 
 [node name="Camera2D" type="Camera2D" parent="."]
@@ -449,6 +449,7 @@ libraries = {
 visible = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
+position = Vector2(0, 1)
 rotation = 1.5708
 shape = SubResource("43")
 disabled = true
@@ -462,7 +463,7 @@ shape = SubResource("44")
 disabled = true
 
 [node name="Dash" type="CollisionShape2D" parent="Hurtbox"]
-position = Vector2(0, 3)
+position = Vector2(0, 2.5)
 shape = SubResource("45")
 
 [node name="JumpBuffer" type="Timer" parent="."]

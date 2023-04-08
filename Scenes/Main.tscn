@@ -1,6 +1,7 @@
-[gd_scene load_steps=16 format=3 uid="uid://bemq5fhcqoryk"]
+[gd_scene load_steps=17 format=3 uid="uid://bemq5fhcqoryk"]
 
 [ext_resource type="PackedScene" uid="uid://dlu5jxm808g7n" path="res://Scenes/Nodes/Alien.tscn" id="1"]
+[ext_resource type="PackedScene" uid="uid://ciewobinewt5d" path="res://Scenes/Nodes/GameManager.tscn" id="1_ebv1d"]
 [ext_resource type="PackedScene" uid="uid://c80n55k76vtop" path="res://Scenes/Nodes/Wheel.tscn" id="2"]
 [ext_resource type="PackedScene" path="res://Scenes/Nodes/TileMap.tscn" id="3"]
 [ext_resource type="PackedScene" uid="uid://00s34p85wnyh" path="res://Scenes/Nodes/Spike.tscn" id="4"]
@@ -79,6 +80,8 @@ _data = {
 }
 
 [node name="Node2D" type="Node2D"]
+
+[node name="GameManager" parent="." instance=ExtResource("1_ebv1d")]
 
 [node name="Environmental Hazards" type="Node" parent="."]
 

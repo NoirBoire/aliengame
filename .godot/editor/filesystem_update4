@@ -3,3 +3,14 @@ res://Scenes/Main.tscn
 res://Tilesets/Tileset.tres
 res://Scenes/Nodes/Drone.tscn
 res://Scenes/Nodes/Wheel.tscn
+res://Scenes/Nodes/Alien.tscn
+res://Scenes/Nodes/Spike.tscn
+res://Scenes/Nodes/DeathParticle.tscn
+res://Scenes/Nodes/Secret.tscn
+res://Scenes/Nodes/DashGhost.tscn
+res://Scenes/Nodes/Spring.tscn
+res://Scripts/Drone.gd
+res://Scripts/Roller.gd
+res://Player.gd
+res://Scripts/GameManager.gd
+res://Scenes/Nodes/GameManager.tscn

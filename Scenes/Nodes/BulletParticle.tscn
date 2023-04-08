@@ -19,6 +19,8 @@ curve = SubResource("10")
 lifetime_randomness = 0.09
 spread = 66.25
 gravity = Vector3(0, 0, 0)
+initial_velocity_min = 31.58
+initial_velocity_max = 52.63
 damping_curve = SubResource("8")
 color_ramp = SubResource("6")
 

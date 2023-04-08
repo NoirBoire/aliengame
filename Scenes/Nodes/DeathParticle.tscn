@@ -22,6 +22,8 @@ lifetime_randomness = 0.09
 direction = Vector3(0, -10000, 0)
 spread = 112.35
 gravity = Vector3(0, 1000, 0)
+initial_velocity_min = 147.36
+initial_velocity_max = 147.36
 damping_curve = SubResource("8")
 color_ramp = SubResource("6")
 

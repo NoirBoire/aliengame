@@ -201,8 +201,7 @@ func _physics_process(delta):
 	
 	# Move player
 	if state != DAMAGED:
-		motion.x = lerp(motion.x, motion_x*speed_modifier*1.0, (0.5 / ((1.0/Engine.get_frames_per_second())/delta) if dashing 
-		else ((0.2 / ((1.0/Engine.get_frames_per_second())/delta)) if abs(motion_x) > 0 else 0.8)))
+		motion.x = lerpf(motion.x, motion_x*speed_modifier, get_lerp_weight(delta, dashing, motion_x))
 	
 	# Animation
 	if !dash_anim:
@@ -230,12 +229,8 @@ func _physics_process(delta):
 	
 	if position.y > 500:
 		die()
-	if Input.is_action_pressed("ui_alt") && Input.is_action_just_pressed("ui_enter"):
-		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_EXCLUSIVE_FULLSCREEN)# if (!((get_window().mode == Window.MODE_EXCLUSIVE_FULLSCREEN) or (get_window().mode == Window.MODE_FULLSCREEN))) else Window.MODE_WINDOWED
-
 	
 func jump():
-	print("hi")
 	if state != DAMAGED:
 		if is_on_floor() || !coyote_timer.is_stopped():
 			if dashing && !air_dash:
@@ -320,3 +315,11 @@ func _on_DamageTimer_timeout():
 
 func _on_Invincibility_timeout() -> void:
 	invincible = false;
+
+func get_lerp_weight(delta: float, dashing: bool, motion_x: float) -> float:
+	var default_weight := 0.2 / ((1.0/Engine.get_frames_per_second())/delta)
+	if dashing:
+		return default_weight
+	if abs(motion_x) > 0:
+		return default_weight
+	return 0.8

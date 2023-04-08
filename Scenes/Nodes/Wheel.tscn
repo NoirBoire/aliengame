@@ -7,13 +7,13 @@
 [ext_resource type="Texture2D" uid="uid://4irf4rdofqe2" path="res://Assets/Wheel Move Chassis.png" id="5"]
 
 [sub_resource type="RectangleShape2D" id="8"]
-size = Vector2(6.5, 5.5)
+size = Vector2(13, 11)
 
 [sub_resource type="RectangleShape2D" id="2"]
-size = Vector2(7.5, 6)
+size = Vector2(15, 12)
 
 [sub_resource type="RectangleShape2D" id="20"]
-size = Vector2(5, 3.5)
+size = Vector2(10, 7)
 
 [sub_resource type="Animation" id="Animation_5usf3"]
 resource_name = "Damaged"
@@ -190,6 +190,7 @@ collision_mask = 6
 script = ExtResource("4")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
 position = Vector2(0.5, 0.5)
 shape = SubResource("8")
 
@@ -200,18 +201,18 @@ script = ExtResource("2")
 [node name="AnimationPlayer" type="AnimationPlayer" parent="Enemy"]
 
 [node name="GroundChecker" type="RayCast2D" parent="Enemy"]
-visible = false
-position = Vector2(-6, 4)
+position = Vector2(-6, 1)
+scale = Vector2(5, 5)
 target_position = Vector2(0, 1)
 collision_mask = 4
 
 [node name="WallChecker" type="RayCast2D" parent="Enemy"]
-visible = false
 position = Vector2(5, 0)
 target_position = Vector2(0, 0)
 collision_mask = 4
 
 [node name="Jumpbox" type="Area2D" parent="Enemy"]
+visible = false
 position = Vector2(1, -2.40731)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Enemy/Jumpbox"]
@@ -226,6 +227,7 @@ position = Vector2(4.5, -1.5)
 shape = SubResource("20")
 
 [node name="Hitbox" type="Area2D" parent="Enemy"]
+visible = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Enemy/Hitbox"]
 position = Vector2(4, -1.5)

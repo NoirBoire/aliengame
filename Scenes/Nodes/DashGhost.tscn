@@ -4,6 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://crpubktlsm6do" path="res://Assets/Alien.png" id="2"]
 
 [node name="DashGhost" type="Sprite2D"]
+self_modulate = Color(0.466667, 0, 1, 0.792157)
 z_index = 4096
 texture_filter = 1
 texture = ExtResource("2")

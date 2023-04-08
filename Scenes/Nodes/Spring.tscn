@@ -82,7 +82,7 @@ _data = {
 }
 
 [sub_resource type="RectangleShape2D" id="8"]
-size = Vector2(10, 3)
+size = Vector2(12, 3)
 
 [node name="Spring" type="CharacterBody2D"]
 texture_filter = 1

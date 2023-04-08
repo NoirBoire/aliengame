@@ -13,3 +13,4 @@ func _physics_process(_delta):
 		alien.motion.y = alien.max_jump_vel*1.7
 		alien.can_dash = true
 		statemachine.travel("Jump")
+		statemachine.travel("Idle")

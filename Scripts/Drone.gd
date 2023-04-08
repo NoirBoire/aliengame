@@ -44,9 +44,6 @@ func _ready():
 
 func _physics_process(delta):
 	
-	#if owner.name == "Drone7":
-	#	print(state)
-	
 	if owner.position.distance_to(spawn_coordinates) > 150:
 		state = RETURN
 	if owner.position.distance_to(alien.position) > 150:
@@ -116,9 +113,9 @@ func _physics_process(delta):
 		DAMAGED:
 			if !taking_damage:
 				if player_colliding:
-					if alien.position.x > owner.position.x:
+					if alien.position.x - owner.position.x > 10:
 						$Sprite2D.flip_h = false
-					elif alien.position.x < owner.position.x:
+					elif alien.position.x - owner.position.x < -10:
 						$Sprite2D.flip_h = true
 				else:
 					$Sprite2D.flip_h = !$Sprite2D.flip_h
@@ -155,7 +152,7 @@ func _physics_process(delta):
 				if check_for_body(alien, alien.position):
 					if alien.position.x > owner.position.x:
 						if !($Sprite2D/AnimationPlayer.current_animation == "Shoot" && $Sprite2D/AnimationPlayer.is_playing()):
-								$Sprite2D.flip_h = true
+							$Sprite2D.flip_h = true
 					elif alien.position.x < owner.position.x:
 						if !($Sprite2D/AnimationPlayer.current_animation == "Shoot" && $Sprite2D/AnimationPlayer.is_playing()):
 							$Sprite2D.flip_h = false
@@ -185,8 +182,7 @@ func _physics_process(delta):
 			$AnimationPlayer.play()
 			
 	# Horizontal movement
-	owner.motion.x = lerp(owner.motion.x, motion_x*1.0, ((1 / ((1.0/Engine.get_frames_per_second())/delta)) if abs(motion_x) > 0 else (0.1 / ((1.0/Engine.get_frames_per_second())/delta))))
-	
+	owner.motion.x = lerpf(owner.motion.x, motion_x, ((1 / ((1.0/Engine.get_frames_per_second())/delta)) if abs(motion_x) > 0 else (0.1 / ((1.0/Engine.get_frames_per_second())/delta))))
 	# Flip hitboxes
 	if !$Sprite2D.flip_h:
 		if owner.has_node("CollisionShape2D"):
