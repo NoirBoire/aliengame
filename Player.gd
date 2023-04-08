@@ -9,7 +9,7 @@ const max_jump_height := 2.25 * Global.UNIT_SIZE
 const min_jump_height := 0.25 * Global.UNIT_SIZE
 const jump_duration := 0.5
 const dash_duration := 0.16
-const dash_speed := 5
+const dash_speed := 5.5
 
 # Statemachine enum/vars
 enum {
@@ -40,7 +40,7 @@ var jump_buffer_jump := false
 var invincible := false
 
 # Dash vars
-var speed_modifier := 1
+var speed_modifier := 1.0
 var dashing := false
 var dash_anim := false
 var can_dash := true
@@ -174,6 +174,8 @@ func _physics_process(delta):
 				buffering_dash = true
 				$DashJumpBuffer.start()
 			else:
+				#Allows the player to dash in the air regardless of ground cooldown
+				$DashCooldown.stop()
 				dash()
 	
 	# Jumping
@@ -269,7 +271,7 @@ func dash():
 		$DashCooldown.start()
 
 func stop_dashing():
-	speed_modifier = 1
+	speed_modifier = 1.0
 	dashing = false
 
 func stop_dash_anim(anim_only : bool):
@@ -292,6 +294,7 @@ func take_damage():
 
 func _on_DashJumpBuffer_is_done():
 	if buffering_dash && buffering_jump:
+		$DashCooldown.stop()
 		dash()
 		jump()
 		buffering_dash = false

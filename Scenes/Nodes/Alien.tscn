@@ -403,7 +403,7 @@ height = 24.0
 size = Vector2(4, 9)
 
 [sub_resource type="RectangleShape2D" id="45"]
-size = Vector2(6, 3)
+size = Vector2(6, 4)
 
 [node name="Alien" type="CharacterBody2D"]
 texture_filter = 1
@@ -446,7 +446,6 @@ libraries = {
 }
 
 [node name="Hitbox" type="Area2D" parent="."]
-visible = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
 position = Vector2(0, 1)
@@ -455,7 +454,6 @@ shape = SubResource("43")
 disabled = true
 
 [node name="Hurtbox" type="Area2D" parent="."]
-visible = false
 
 [node name="Normal" type="CollisionShape2D" parent="Hurtbox"]
 position = Vector2(0, 3.5)
@@ -463,7 +461,7 @@ shape = SubResource("44")
 disabled = true
 
 [node name="Dash" type="CollisionShape2D" parent="Hurtbox"]
-position = Vector2(0, 2.5)
+position = Vector2(0, 3)
 shape = SubResource("45")
 
 [node name="JumpBuffer" type="Timer" parent="."]
@@ -480,7 +478,7 @@ one_shot = true
 
 [node name="DashJumpBuffer" type="Node2D" parent="."]
 script = ExtResource("3")
-wait_time = 0.017
+wait_time = 0.02
 
 [node name="DashCooldown" type="Node2D" parent="."]
 script = ExtResource("3")
